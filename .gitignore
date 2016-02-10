@@ -1,2 +1,4 @@
 .pyc
 .DS_Store
+.ipynb_checkpoints/
+sa_data/
