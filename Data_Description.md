@@ -1,6 +1,3 @@
-Description of the data sets - their size, dimensionality, data model (what specific columns, etc are available).
-Is it possible to create a subset of the data for unit tests?
-
 We have 34 files in our dataset, described below.  These files were generated to complete a global sensitivity analysis of a system of stiff ODE equations that models the pyrolysis of lignin.
 
 # input_parameters.csv
@@ -27,3 +24,7 @@ We have 34 files in our dataset, described below.  These files were generated to
 -  These files are the results of the sobol sensitivity analysis.  Each row contains:
     -  Parameter name, 1st order sensitivity index, 1st order index confidence interval, total sensitivity index, total index confidence interval
 -  There is a header with column names.  Entries are separated by a space.
+
+
+
+It is trivial to create a subset of all these three data sources for unit tests.  Individual rows from the input_parameters and results files would make good test cases for unit tests.  Likewise, we could either use individual rows from particular analysis* files, or use a single analysis* file for unit tests of the appropriate components.
