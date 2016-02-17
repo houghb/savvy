@@ -1,5 +1,3 @@
-Briefly describe the motivation and science/engineering tasks (enumerate them explicitly).  Describe the use cases.
-
 # Motivation:
 - To effectively visualize a detailed sensitivity analysis of a large data set.
 
