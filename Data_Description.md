@@ -14,7 +14,7 @@ We have 34 files in our dataset, described below.  These files were generated to
     - mass fraction of: solids lighttars heavytars totaltars CO CO2 othergases totalgases H20 
     - H-C-ratio
     - Moisture content of tar (wt%) 
-    - distribution of functional groups (% of carbon) from: tot_C--O tot_aromaticC-O tot_aromaticC-C tot_aromaticC-H tot_aliphaticC-O tot_aromatic methoxyl tot_aliphaticC-C heavy_C--O heavy_aromatic_C-O heavy_aromatic_C-C heavy_aromatic_C-H heavy_aliphatic_C-O heavy_aromatic_methoxyl heavy_aliphatic_C-C light_C--O light_aromatic_C-O light_aromatic_C-H light_aliphatic_C-O light_aliphatic_C-C 
+    - distribution of functional groups (% of carbon) from: tot_C--O tot_aromaticC-O tot_aromaticC-C tot_aromaticC-H tot_aliphaticC-O tot_aromatic methoxyl tot_aliphaticC-C heavy_C--O heavy_aromatic_C-O heavy_aromatic_C-C heavy_aromatic_C-H heavy_aliphatic_C-O heavy_aromatic_methoxyl heavy_aliphatic_C-C light_C--O light_aromatic_C-O light_aromatic_C-C light_aromatic_C-H light_aliphatic_C-O light_aromatic_methoxyl light_aliphatic_C-C 
 -  There is a header in the file.  Each entry is separated by a comma.
 
 # analysis_*.txt
