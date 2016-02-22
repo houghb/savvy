@@ -125,4 +125,4 @@ def makeplot(Dataframe, Cols, minvalues):
     show(p)
 
 # Command call to implement example plot.
-makeplot('analysis_CO.txt', np.array(['S1', 'ST']), np.array([0.001, 0.001]))
+makeplot('../../HDSAviz_data/analysis_CO.txt', np.array(['S1', 'ST']), np.array([0.001, 0.001]))
