@@ -49,7 +49,7 @@ def get_all_params(numrows=None):
               (default is to read all rows).
     """
     return read_file('../../HDSAviz_data/input_parameters.csv',
-                    numrows=numrows)
+                     numrows=numrows)
 
 
 def get_params(numrows=None):
@@ -61,8 +61,8 @@ def get_params(numrows=None):
               (default is to read all rows).
     """
     return read_file('../../HDSAviz_data/input_parameters.csv',
-                    numrows=numrows,
-                    drop=['End_time', 'Oxygen'])
+                     numrows=numrows,
+                     drop=['End_time', 'Oxygen'])
 
 
 def get_results(numrows=None):
@@ -75,8 +75,8 @@ def get_results(numrows=None):
           (default is to read all rows).
     """
     return read_file('../../HDSAviz_data/results.csv',
-                    numrows=numrows,
-                    drop=['light_aromatic_C-C', 'light_aromatic_methoxyl'])
+                     numrows=numrows,
+                     drop=['light_aromatic_C-C', 'light_aromatic_methoxyl'])
 
 
 def get_sa(path='../../HDSAviz_data/'):
@@ -135,7 +135,7 @@ def get_sa(path='../../HDSAviz_data/'):
                                           nrows=(i - 1)),
                               pd.read_csv(path + filename, sep=' ',
                                           skiprows=i)
-                             ]
+                              ]
             else:
                 sens[name] = [pd.read_csv(path + filename, sep=' '),
                               False]
@@ -164,7 +164,7 @@ def combine_sens(order):
 
     Parameters:
     -----------
-    order : String indicating the order of the indices to combine (first, total)
+    order : String indicating which order indices to combine (first, total)
 
     Returns:
     --------
@@ -195,6 +195,3 @@ def id_unnecessary():
 #         if col != 'Output_Measure':
 #             if STdata[col].max() == 0.0:
 #                 print col
-
-
-
