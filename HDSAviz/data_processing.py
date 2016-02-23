@@ -100,8 +100,9 @@ def get_sa(path='../../HDSAviz_data/'):
            path).  Dictionary values are a list of pandas dataframes.  If
            only first and total order indices were calculated in the
            sensitivity analysis then this list will contain just one pandas
-           dataframe (sens[key][0]).  If second order indices are present
-           they are in a second dataframe (sens[key][1]).
+           dataframe (sens[key][0]) and the second item in the list will be
+           False.  If second order indices are present they are in a second
+           dataframe (sens[key][1]).
     """
     filenames = [filename for filename in os.listdir(
                 path) if filename.startswith('a')]
@@ -136,13 +137,15 @@ def get_sa(path='../../HDSAviz_data/'):
                                           skiprows=i)
                              ]
             else:
-                sens[name] = [pd.read_csv(path + filename, sep=' ')]
+                sens[name] = [pd.read_csv(path + filename, sep=' '),
+                              False]
 
-        # Convert negative values to positives by adding their conf value
-        sens[name][0].ix[sens[name][0]['S1'] < 0, 'S1'] = (sens[name][0]['S1']+
-                                                     sens[name][0]['S1_conf'])
-        # If still negative then set equal to zero
+        # Convert negative values to 0 (all negative values are close to
+        # zero already, negative values are the result of machine precision
+        # issues or setting n too low when generating the parameter sets)
         sens[name][0].ix[sens[name][0]['S1'] < 0, 'S1'] = 0
+        if isinstance(sens[name][1], pd.DataFrame):
+            sens[name][1].ix[sens[name][1]['S2'] < 0, 'S2'] = 0
 
         # Change 'rxn' to 'k' for consistency with inputs file
         sens[name][0].Parameter = (sens[name][0].Parameter
