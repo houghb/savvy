@@ -102,7 +102,7 @@ def get_sa(path='../../HDSAviz_data/'):
     This function reads and processes all the sensitivity analysis results
     in a specified folder, and returns a dictionary with the corresponding
     dataframes.  Sensitivity analysis results should be in the default SALib
-    format and must start with the letter 'a'.
+    format and must start with the word 'analysis'.
 
     NOTE: there are two lines of code at the beginning of this function
     (the filenames.remove lines) that are specific to our lignin modeling
@@ -128,7 +128,7 @@ def get_sa(path='../../HDSAviz_data/'):
            dataframe (sens[key][1]).
     """
     filenames = [filename for filename in os.listdir(
-                path) if filename.startswith('a')]
+                path) if filename.startswith('analysis')]
     # These two functional groups are not present in the light oil fraction
     filenames.remove('analysis_light_aromatic-C-C.txt')
     filenames.remove('analysis_light_aromatic-methoxyl.txt')
