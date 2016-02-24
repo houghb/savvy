@@ -2,7 +2,8 @@
 
     This script is just the first step in visualizing the data set. This file
     comprises of the method creating an html bokeh plot and a command at the
-    end to implement the method
+    end to implement the method.
+
 """
 from collections import OrderedDict
 
