@@ -46,7 +46,7 @@ def gen_params(num_vars, names, bounds, n, second=True):
         print '%s simulations will be run' % (n * (problem['num_vars'] + 2))
 
     # Write the problem description to a file (required to run the analysis
-    # afer your model has been run with all the generated parameter sets)
+    # after your model has been run with all the generated parameter sets)
     body = ''
     for i, name in enumerate(problem['names']):
         body += '%s %s %s\n' % (name, problem['bounds'][i][0],
@@ -63,7 +63,7 @@ def analyze_sensitivity(problem, Y, column, delimiter, order, name,
     """
     Perform the sensitivity analysis after you have run your model
     with all the parameters from gen_params().  This is done from
-    the command line because is is faster and gives the option to
+    the command line because it is faster and gives the option to
     specify the column of the results file to analyze.  Parallel
     processing is possible.  Results are saved to a file using the
     name parameter.
