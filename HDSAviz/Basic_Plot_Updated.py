@@ -12,11 +12,14 @@ import pandas as pd
 import pdb
 
 from bokeh.plotting import figure, show, output_file
+from bokeh.models import (BoxZoomTool, ResetTool, PreviewSaveTool,
+                          ResizeTool, PanTool, PolySelectTool,
+                          WheelZoomTool, HoverTool, BoxSelectTool)
 
 # import data_processing as dp
 
 
-def make_plot(Dataframe, Cols, minvalues):
+def make_plot(Dataframe, Cols=np.array(['S1', 'S2']), minvalues):
     """Basic method to plot sensitivity anlaysis.
 
     This is the method to generate a bokeh plot followung the burtin example
@@ -34,6 +37,7 @@ def make_plot(Dataframe, Cols, minvalues):
     minvalues: Cutoff minimum for which parameters should be plotted (Array of
                 floats)
     Returns:
+    ---------------
     p: Figure of the data to be plotted
     """
     # Read in csv file as panda dataframe.
@@ -56,8 +60,8 @@ def make_plot(Dataframe, Cols, minvalues):
     for i in range(0, Cols.size):
         stat_color[i] = colors[i]
     # Reset index of dataframe.
+    df = df.sort(Cols[1], ascending=False)
     df = df.reset_index(drop=True)
-
     # Sizing parameters
     width = 800
     height = 800
@@ -68,12 +72,21 @@ def make_plot(Dataframe, Cols, minvalues):
     big_angle = 2.0 * np.pi / (len(df)+1)
     # Determine division of wedges for plotting bars based on # stats plotted
     small_angle = big_angle / (minvalues.size+2)
+    # pdb.set_trace()
+    # params = df['Parameter']
+    # S1vals = df['S1']
+    # S1vals = df['ST']
+
+    plottools = "resize,save,pan,box_zoom,wheel_zoom"
 
     p = figure(plot_width=width, plot_height=height, title="",
                x_axis_type=None, y_axis_type=None,
                x_range=(-420, 420), y_range=(-420, 420),
                min_border=0, outline_line_color="black",
-               background_fill_color="#f0e1d2", border_fill_color="#f0e1d2")
+               background_fill_color="#f0e1d2", border_fill_color="#f0e1d2",
+               tools=plottools)
+    # p.select_one(HoverTool).tooltips = [
+    # ('Parameter', '@params')]
 
     p.xgrid.grid_line_color = None
     p.ygrid.grid_line_color = None
@@ -82,33 +95,40 @@ def make_plot(Dataframe, Cols, minvalues):
     angles = np.pi/2 - big_angle/2 - df.index.to_series()*big_angle
     # circular axes and labels
     labels = np.power(10.0, np.arange(0, -5, -1))
-    labz = np.power(10.0, np.arange(-0.30103, -4.30103, -1))
+    extra_labels = np.power(10.0, np.arange(-0.30103, -4.30103, -1))
     # Re-size if no values are above 0.1
     if maxval < 0.1:
         labels = np.delete(labels, 0)
     # Size of radii of each label
     # pdb.set_trace()
-    rad = (((np.log10(labz / labels[0])) + labels.size) *
-           (outer_radius - inner_radius) / labels.size + inner_radius)
+    extra_radii = (((np.log10(extra_labels / labels[0])) + labels.size) *
+                   (outer_radius - inner_radius) / labels.size + inner_radius)
     radii = (((np.log10(labels / labels[0])) + labels.size) *
              (outer_radius - inner_radius) / labels.size + inner_radius)
+
     # Add zero label to labels and radii
     labels = np.append(labels, 0.0)
     radii = np.append(radii, inner_radius)
-    rad = np.append(rad, radii)
-    p.circle(0, 0, radius=rad, fill_color=None, line_color="white")
+    extra_radii = np.append(extra_radii, radii)
+
+    # Adding axis lines and labels
+    p.circle(0, 0, radius=extra_radii, fill_color=None, line_color="white")
     p.text(0, radii[:], [str(r) for r in labels[:]],
            text_font_size="8pt", text_align="center", text_baseline="middle")
+
     # Plot the values of each stat for each parameter.
-    for c in range(0, Cols.size):
-        p.annular_wedge(0, 0, inner_radius, (((np.log10(df[Cols[c]] /
-                                              labels[0])) + labels.size) *
-                                             (outer_radius - inner_radius) /
-                                             labels.size + inner_radius),
-                        -big_angle + angles + (2*c + 1)*small_angle,
-                        -big_angle + angles + (2*c + 2)*small_angle,
-                        color=stat_color[c])
+    # radius of stat is the value of a statistic converted to the radial
+    # value.
+    for statistic in range(0, Cols.size):
+        radius_of_stat = (((np.log10(df[Cols[statistic]] / labels[0])) +
+                          labels.size) * (outer_radius - inner_radius) /
+                          labels.size + inner_radius)
+        p.annular_wedge(0, 0, inner_radius, radius_of_stat,
+                        -big_angle + angles + (2*statistic + 1)*small_angle,
+                        -big_angle + angles + (2*statistic + 2)*small_angle,
+                        color=stat_color[statistic])
     # radial axes
+
     p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
                     -big_angle+angles, -big_angle+angles, color="black")
 
@@ -126,5 +146,7 @@ def make_plot(Dataframe, Cols, minvalues):
            color=list(stat_color.values()))
     p.text([-15, -15, -15], [18, 0, -18], text=Cols,
            text_font_size="9pt", text_align="left", text_baseline="middle")
-
-    return p
+    output_file('unemployment.html', title="unemployment.py example")
+    show(p)
+make_plot('../../HDSAviz_data/analysis_CO.txt', np.array(['S1', 'ST']),
+          np.array([0.005, 0.005]))
