@@ -16,7 +16,7 @@ from bokeh.models import (BoxZoomTool, ResetTool, PreviewSaveTool,
                           ResizeTool, PanTool, PolySelectTool,
                           WheelZoomTool, HoverTool, BoxSelectTool)
 
-# import data_processing as dp
+import data_processing as dp
 
 
 def make_plot(Dataframe, Cols=np.array(['S1', 'ST']), minvalues=0.001):
@@ -41,10 +41,10 @@ def make_plot(Dataframe, Cols=np.array(['S1', 'ST']), minvalues=0.001):
     p: Figure of the data to be plotted
     """
     # Read in csv file as panda dataframe. To be deleted upon merge.
-    tdf = pd.read_csv(Dataframe, delimiter=' ', skipinitialspace=True,
-                      engine='python')
-    df = tdf
-    # df = Dataframe
+    # tdf = pd.read_csv(Dataframe, delimiter=' ', skipinitialspace=True,
+    #                   engine='python')
+    # df = tdf
+    df = Dataframe
     maxval = 0
     # Remove rows which have values less than cutoff values
     for i in range(0, Cols.size):
