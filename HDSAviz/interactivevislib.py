@@ -2,11 +2,24 @@
 The current program is meant to draw interactive visualizations using BOKEH
 and ipywidgets libraries for sensitivity analysis
 
+Dependencies :
+Currently this code needs to be run Inside Ipython notebook.
+Python version :2.7
+
 Note:
 Please ensure Basic_Plot.py exists in same directory and necessary data files are
 located in c:/HDSAviz_data folder
-"""
 
+Basically files should be organized as :
+
+C: HDSAviz_data\
+C: HDSAviz_data\analysis_CO.txt
+C: HDSAviz_data\analysis_CO2.txt
+C: HDSAviz_data\interactivevislib.py
+
+etc.
+
+"""
 #import Basic_Plot  once Basic_Plot file is ammended.
 
 import os
@@ -21,9 +34,6 @@ from bokeh.plotting import figure, show, output_notebook, output_file
 # S1) sensitivity tests
 ST_Range = 1
 S1_Range = 1
-
-
-
 
 def change_directory():
     """
@@ -150,3 +160,19 @@ def short_interactive_demo ():
     slider2 = FloatSlider(value = 1, min = 0.1, max = 10, step=0.1,
                           title = 'ST-Range')
     return interact(short_tabs_demo, S1_Range = slider1, ST_Range = slider2)
+
+
+# for trial runs please uncomment the following when files are in correct folder
+"""
+Small demo's with two outcomes(CO and CO2) plotted as tabs.
+"""
+# short_tabs_demo(1,1)
+# short_interactive_demo()
+
+"""
+The interactive plots for all Outcomes with all outcomes as tab.
+"""
+# plot_all_outcomes_burtin(1, 1)
+# Interact_with_burtin_plots()
+
+print
