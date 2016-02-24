@@ -13,7 +13,7 @@ import os
 import pandas as pd
 
 
-def read_file(filename, numrows=None, drop=False, sep=','):
+def read_file(path, numrows=None, drop=False, sep=','):
     """
     Function reads a file of input parameters or model results
     and returns a pandas dataframe with its contents.
@@ -22,7 +22,7 @@ def read_file(filename, numrows=None, drop=False, sep=','):
 
     Parameters:
     ----------
-    filename  : String with the complete filename, including
+    path      : String with the complete filename, including
                 absolute or relative path.
     numrows   : Integer number of rows of the file to read.
                 If you don't specify this parameter all rows
@@ -40,14 +40,15 @@ def read_file(filename, numrows=None, drop=False, sep=','):
          limited to the number of rows specified and without the
          columns named in "drop".
     """
-    df = pd.read_csv(filename, sep=sep, nrows=numrows)
+    df = pd.read_csv(path, sep=sep, nrows=numrows)
     if not drop:
         df.drop(drop, axis=1, inplace=True)
 
     return df
 
 
-def get_params(numrows=None, drop=['End_time', 'Oxygen']):
+def get_params(path='../../HDSAviz_data/input_parameters.csv',
+               numrows=None, drop=['End_time', 'Oxygen']):
     """
     NOTE: This function is specific to our lignin modeling dataset
 
@@ -59,6 +60,7 @@ def get_params(numrows=None, drop=['End_time', 'Oxygen']):
 
     Parameters:
     ----------
+    path    : string containing the path to the parameters csv
     numrows : the number of rows of the input_parameters file to read
               (default is to read all rows).
     drop    : a list of strings for which parameters you do not want to
@@ -70,11 +72,11 @@ def get_params(numrows=None, drop=['End_time', 'Oxygen']):
     A pandas dataframe
 
     """
-    return read_file('../../HDSAviz_data/input_parameters.csv',
-                     numrows=numrows, drop=drop)
+    return read_file(path, numrows=numrows, drop=drop)
 
 
-def get_results(numrows=None, drop=['light_aromatic_C-C',
+def get_results(path='../../HDSAviz_data/results.csv',
+                numrows=None, drop=['light_aromatic_C-C',
                                     'light_aromatic_methoxyl']):
     """
     NOTE: This function is specific to our lignin modeling dataset
@@ -85,14 +87,14 @@ def get_results(numrows=None, drop=['light_aromatic_C-C',
 
     Parameters:
     ----------
+    path    : string containing the path to the results csv file
     numrows : the number of rows of the input_parameters file to read
               (default is to read all rows).
     drop    : a list of strings for which output measures to drop from
               the returned dataframe.  If you want all outputs use
               drop=False.
     """
-    return read_file('../../HDSAviz_data/results.csv',
-                     numrows=numrows, drop=drop)
+    return read_file(path, numrows=numrows, drop=drop)
 
 
 def get_sa(path='../../HDSAviz_data/'):
