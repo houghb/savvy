@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pdb
 
-from bokeh.plotting import figure, show, output_file
+from bokeh.plotting import figure, show, output_notebook, output_file
 
 
 """This script is just the first step in visualizing the data set. This file
@@ -13,15 +13,12 @@ comprises of the method creating an html bokeh plot and a command at the end to
 implement the method
 """
 
-
 def makeplot(Dataframe, Cols, minvalues):
     """Basic method to plot sensitivity anlaysis.
-
     This is the method to generate a bokeh plot followung the burtin example
     template at the bokeh website. For clarification, parameters refer to an
     output being measured (Tmax, C, rxn2, etc.) and stats refer to the 1st or
     total order sensitivity index.
-
     Inputs:
     Dataframe - Name of csv file to be read into as a panda dataframe (String)
                 **Note file must be in same folder as script.**
@@ -81,7 +78,7 @@ def makeplot(Dataframe, Cols, minvalues):
     if maxval < 0.1:
         labels = np.delete(labels, 0)
     # Size of radii of each label
-    pdb.set_trace()
+    #pdb.set_trace()
     rad = (((np.log10(labz / labels[0])) + labels.size) *
            (outer_radius - inner_radius) / labels.size + inner_radius)
     radii = (((np.log10(labels / labels[0])) + labels.size) *
@@ -116,13 +113,10 @@ def makeplot(Dataframe, Cols, minvalues):
     p.text(xr, yr, df.Parameter, angle=label_angle,
            text_font_size="9pt", text_align="center", text_baseline="middle")
 
-    p.rect([-40, -40, -40], [18, 0, -18], width=30, height=13,
+    p.rect([-40, -40], [18, 0], width=30, height=13,
            color=list(stat_color.values()))
-    p.text([-15, -15, -15], [18, 0, -18], text=Cols,
+    p.text([-15, -15], [18, 0], text=Cols,
            text_font_size="9pt", text_align="left", text_baseline="middle")
 
-    output_file("Sensitivity.html", title=Dataframe)
-    show(p)
 
-# Command call to implement example plot.
-makeplot('analysis_CO.txt', np.array(['S1', 'ST']), np.array([0.001, 0.001]))
+    return p
