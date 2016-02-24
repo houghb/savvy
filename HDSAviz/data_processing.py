@@ -1,4 +1,13 @@
-""" Tools for reading and processing the sensitivity analysis data files."""
+"""
+Tools for reading and processing the sensitivity analysis data files.
+Some of the files are specific to our project (`input_parameters.csv' and
+`results.csv`), but the results of sensitivity analyses are formatted
+as any SALib analysis results will be.
+
+Our data files are stored outside this repository because they are too large,
+so it may be necessary for future users to update the relative paths below
+(our data directory is located at ../../HDSAviz_data/
+"""
 import os
 
 import pandas as pd
@@ -38,45 +47,52 @@ def read_file(filename, numrows=None, drop=False, sep=','):
     return df
 
 
-def get_all_params(numrows=None):
+def get_params(numrows=None, drop=['End_time', 'Oxygen']):
     """
-    Returns a pandas dataframe with all of the input parameters
-    set in running the model for sensitivity analysis, including
-    the parameters that are not analyzed for sensitivity (end time
-    and oxygen content).
+    NOTE: This function is specific to our lignin modeling dataset
 
-    numrows = the number of rows of the input_parameters file to read
-              (default is to read all rows).
-    """
-    return read_file('../../HDSAviz_data/input_parameters.csv',
-                     numrows=numrows)
-
-
-def get_params(numrows=None):
-    """
     Returns a pandas dataframe with all the parameters analyzed in
-    the sensitivity analysis, but not additional parameters.
+    the sensitivity analysis, but not additional parameters like
+    end time and oxygen content.  If you would like all of the
+    parameters (even those not analyzed for sensitivity) then pass
+    drop=False.
 
-    numrows = the number of rows of the input_parameters file to read
+    Parameters:
+    ----------
+    numrows : the number of rows of the input_parameters file to read
               (default is to read all rows).
+    drop    : a list of strings for which parameters you do not want to
+              include in the returned dataframe.  If you want all params
+              then pass drop=False.
+
+    Returns:
+    -------
+    A pandas dataframe
+
     """
     return read_file('../../HDSAviz_data/input_parameters.csv',
-                     numrows=numrows,
-                     drop=['End_time', 'Oxygen'])
+                     numrows=numrows, drop=drop)
 
 
-def get_results(numrows=None):
+def get_results(numrows=None, drop=['light_aromatic_C-C',
+                                    'light_aromatic_methoxyl']):
     """
+    NOTE: This function is specific to our lignin modeling dataset
+
     Returns a pandas dataframe with the results of running all of the
     simulations for the parameters sets in `input_parameters.csv`. This
     function drops two unused functional groups from the results file.
 
-    numrows = the number of rows of the input_parameters file to read
-          (default is to read all rows).
+    Parameters:
+    ----------
+    numrows : the number of rows of the input_parameters file to read
+              (default is to read all rows).
+    drop    : a list of strings for which output measures to drop from
+              the returned dataframe.  If you want all outputs use
+              drop=False.
     """
     return read_file('../../HDSAviz_data/results.csv',
-                     numrows=numrows,
-                     drop=['light_aromatic_C-C', 'light_aromatic_methoxyl'])
+                     numrows=numrows, drop=drop)
 
 
 def get_sa(path='../../HDSAviz_data/'):
@@ -85,6 +101,11 @@ def get_sa(path='../../HDSAviz_data/'):
     in a specified folder, and returns a dictionary with the corresponding
     dataframes.  Sensitivity analysis results should be in the default SALib
     format and must start with the letter 'a'.
+
+    NOTE: there are two lines of code at the beginning of this function
+    (the filenames.remove lines) that are specific to our lignin modeling
+    dataset.  Future users will want to remove or modify these lines to use
+    with other datasets.
 
     Parameters:
     -----------
