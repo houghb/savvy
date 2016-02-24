@@ -97,11 +97,14 @@ def get_results(path='../../HDSAviz_data/results.csv',
     return read_file(path, numrows=numrows, drop=drop)
 
 
-def get_sa(path='../../HDSAviz_data/'):
+def get_sa_data(path='../../HDSAviz_data/'):
     """
     This function reads and processes all the sensitivity analysis results
-    in a specified folder, and returns a dictionary with the corresponding
-    dataframes.  Sensitivity analysis results should be in the default SALib
+    in a specified folder and returns a dictionary with the corresponding
+    dataframes for first/total order sensitivity indices and second order
+    indices (if present).
+
+    Sensitivity analysis results should be in the default SALib output
     format and must start with the word 'analysis'.
 
     NOTE: there are two lines of code at the beginning of this function
@@ -118,14 +121,20 @@ def get_sa(path='../../HDSAviz_data/'):
 
     Returns:
     --------
-    sens : Dictionary where keys are the names of the various output measures
-           (one output measure per analysis file in the folder specified by
-           path).  Dictionary values are a list of pandas dataframes.  If
-           only first and total order indices were calculated in the
-           sensitivity analysis then this list will contain just one pandas
-           dataframe (sens[key][0]) and the second item in the list will be
-           False.  If second order indices are present they are in a second
-           dataframe (sens[key][1]).
+    sens_dfs : Dictionary where keys are the names of the various output
+               measures (one output measure per analysis file in the folder
+               specified by path).  Dictionary values are a list of pandas
+               dataframes.
+
+               sens_dfs['key'][0] is a dataframe with the first and total
+               order indices of all the parameters with respect to the "key"
+               output variable.
+
+               sens_dfs['key'][1] is a dataframe with the second order
+               indices for pairs of parameters (if second order indices are
+               present in the analysis file).  If there are no second order
+               results in the analysis file then this value is a boolean,
+               False.
     """
     filenames = [filename for filename in os.listdir(
                 path) if filename.startswith('analysis')]
@@ -136,7 +145,7 @@ def get_sa(path='../../HDSAviz_data/'):
     # Make a dictionary where keys are the different output measures
     # (one for each analysis file) and values are lists of dataframes
     # with the first/total analysis results, and the second order results.
-    sens = {}
+    sens_dfs = {}
     for i, filename in enumerate(filenames):
         name = filename[9:].replace('.txt', '')
 
@@ -154,27 +163,27 @@ def get_sa(path='../../HDSAviz_data/'):
                     i = False
             # If there are second order indices in the file
             if i:
-                sens[name] = [pd.read_csv(path + filename, sep=' ',
+                sens_dfs[name] = [pd.read_csv(path + filename, sep=' ',
                                           nrows=(i - 1)),
                               pd.read_csv(path + filename, sep=' ',
                                           skiprows=i)
                               ]
             else:
-                sens[name] = [pd.read_csv(path + filename, sep=' '),
+                sens_dfs[name] = [pd.read_csv(path + filename, sep=' '),
                               False]
 
         # Convert negative values to 0 (all negative values are close to
         # zero already, negative values are the result of machine precision
         # issues or setting n too low when generating the parameter sets)
-        sens[name][0].ix[sens[name][0]['S1'] < 0, 'S1'] = 0
-        if isinstance(sens[name][1], pd.DataFrame):
-            sens[name][1].ix[sens[name][1]['S2'] < 0, 'S2'] = 0
+        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1'] = 0
+        if isinstance(sens_dfs[name][1], pd.DataFrame):
+            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2'] = 0
 
         # Change 'rxn' to 'k' for consistency with inputs file
-        sens[name][0].Parameter = (sens[name][0].Parameter
+        sens_dfs[name][0].Parameter = (sens_dfs[name][0].Parameter
                                    .str.replace('rxn', 'k', case=False))
 
-    return sens
+    return sens_dfs
 
 
 def combine_sens(order):
