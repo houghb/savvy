@@ -19,13 +19,13 @@ from bokeh.models import (BoxZoomTool, ResetTool, PreviewSaveTool,
 # import data_processing as dp
 
 
-def make_plot(Dataframe, Cols=np.array(['S1', 'S2']), minvalues):
+def make_plot(Dataframe, Cols=np.array(['S1', 'ST']), minvalues=0.001):
     """Basic method to plot sensitivity anlaysis.
 
     This is the method to generate a bokeh plot followung the burtin example
     template at the bokeh website. For clarification, parameters refer to an
-    output being measured (Tmax, C, k2, etc.) and stats refer to the 1st or
-    total order sensitivity index.
+    output being measured (Tmax, C, k2, etc.) and senstivity indices refer to
+    the actual values plotted (S1 and ST).
 
     Parameters:
     --------------
@@ -34,49 +34,54 @@ def make_plot(Dataframe, Cols=np.array(['S1', 'S2']), minvalues):
                 **Note file must be in same folder as script.**}
                 Delete upon change
     Cols: Names of the columns to be plotted (Array of strings)
-    minvalues: Cutoff minimum for which parameters should be plotted (Array of
-                floats)
+    minvalues: Float the represents the minimum senstivity index plotted
+
     Returns:
     ---------------
     p: Figure of the data to be plotted
     """
-    # Read in csv file as panda dataframe.
+    # Read in csv file as panda dataframe. To be deleted upon merge.
     tdf = pd.read_csv(Dataframe, delimiter=' ', skipinitialspace=True,
                       engine='python')
     df = tdf
     # df = Dataframe
+
     maxval = 0
     # Remove rows which have values less than cutoff values
-    for i in range(0, minvalues.size):
-        df = df[df[Cols[i]] > minvalues[i]]
+    for i in range(0, Cols.size):
+        df = df[df[Cols[i]] > minvalues]
         if maxval < max(df[Cols[i]]):
             maxval = max(df[Cols[i]])
+    # Sort rows in descending order and reindex
+    df = df.sort(Cols[1], ascending=False)
+    df = df.reset_index(drop=True)
     df = df.dropna()
 
-    # Create dictionary of bar colors, assume up to 3 stats are plotted
+    # Create dictionary of bar colors, assume up to 2 stats are plotted
     # per parameter.
-    colors = ["#0d3362", "#c64737", "black"]
+    colors = ["#0d3362", "#c64737"]
     stat_color = OrderedDict()
     for i in range(0, Cols.size):
         stat_color[i] = colors[i]
-    # Reset index of dataframe.
-    df = df.sort(Cols[1], ascending=False)
-    df = df.reset_index(drop=True)
-    # Sizing parameters
+
+    # Sizing parameters for plot
     width = 800
     height = 800
     inner_radius = 90
     outer_radius = 300 - 10
 
     # Determine wedge size based off number of parameters
+    # Big angle represents wedge size for one parameter
     big_angle = 2.0 * np.pi / (len(df)+1)
+
     # Determine division of wedges for plotting bars based on # stats plotted
-    small_angle = big_angle / (minvalues.size+2)
-    # pdb.set_trace()
+    small_angle = big_angle / (Cols.size+2)
+
     # params = df['Parameter']
     # S1vals = df['S1']
     # S1vals = df['ST']
 
+    # enable tools
     plottools = "resize,save,pan,box_zoom,wheel_zoom"
 
     p = figure(plot_width=width, plot_height=height, title="",
@@ -96,11 +101,10 @@ def make_plot(Dataframe, Cols=np.array(['S1', 'S2']), minvalues):
     # circular axes and labels
     labels = np.power(10.0, np.arange(0, -5, -1))
     extra_labels = np.power(10.0, np.arange(-0.30103, -4.30103, -1))
-    # Re-size if no values are above 0.1
-    if maxval < 0.1:
-        labels = np.delete(labels, 0)
+
     # Size of radii of each label
-    # pdb.set_trace()
+    # extra radii are axis lines without labels
+    # radii are axis lines with labels
     extra_radii = (((np.log10(extra_labels / labels[0])) + labels.size) *
                    (outer_radius - inner_radius) / labels.size + inner_radius)
     radii = (((np.log10(labels / labels[0])) + labels.size) *
@@ -119,16 +123,17 @@ def make_plot(Dataframe, Cols=np.array(['S1', 'S2']), minvalues):
     # Plot the values of each stat for each parameter.
     # radius of stat is the value of a statistic converted to the radial
     # value.
-    for statistic in range(0, Cols.size):
-        radius_of_stat = (((np.log10(df[Cols[statistic]] / labels[0])) +
-                          labels.size) * (outer_radius - inner_radius) /
-                          labels.size + inner_radius)
-        p.annular_wedge(0, 0, inner_radius, radius_of_stat,
-                        -big_angle + angles + (2*statistic + 1)*small_angle,
-                        -big_angle + angles + (2*statistic + 2)*small_angle,
-                        color=stat_color[statistic])
-    # radial axes
-
+    for sensitivity in range(0, Cols.size):
+        # radius of sense is the value of senstivity index converted into the
+        # radial scale of 90-300. (inner and outer radius of plot)
+        radius_of_sense = (((np.log10(df[Cols[sensitivity]] / labels[0])) +
+                           labels.size) * (outer_radius - inner_radius) /
+                           labels.size + inner_radius)
+        p.annular_wedge(0, 0, inner_radius, radius_of_sense,
+                        -big_angle + angles + (2*sensitivity + 1)*small_angle,
+                        -big_angle + angles + (2*sensitivity + 2)*small_angle,
+                        color=stat_color[sensitivity])
+    # Markers between wedge
     p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
                     -big_angle+angles, -big_angle+angles, color="black")
 
@@ -146,7 +151,7 @@ def make_plot(Dataframe, Cols=np.array(['S1', 'S2']), minvalues):
            color=list(stat_color.values()))
     p.text([-15, -15, -15], [18, 0, -18], text=Cols,
            text_font_size="9pt", text_align="left", text_baseline="middle")
-    output_file('unemployment.html', title="unemployment.py example")
-    show(p)
-make_plot('../../HDSAviz_data/analysis_CO.txt', np.array(['S1', 'ST']),
-          np.array([0.005, 0.005]))
+    return p
+#     output_file('unemployment.html', title="unemployment.py example")
+#     show(p)
+# make_plot('../../HDSAviz_data/analysis_CO.txt')
