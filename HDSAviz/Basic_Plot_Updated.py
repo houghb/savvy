@@ -46,6 +46,7 @@ def make_plot(Dataframe, Cols=np.array(['S1', 'ST']), minvalues=0.001):
     # df = tdf
     df = Dataframe
     maxval = 0
+    pdb.set_trace()
     # Remove rows which have values less than cutoff values
     for i in range(0, Cols.size):
         df = df[df[Cols[i]] > minvalues]
@@ -151,6 +152,7 @@ def make_plot(Dataframe, Cols=np.array(['S1', 'ST']), minvalues=0.001):
     p.text([-15, -15, -15], [18, 0, -18], text=Cols,
            text_font_size="9pt", text_align="left", text_baseline="middle")
     return p
-#     output_file('unemployment.html', title="unemployment.py example")
-#     show(p)
-# make_plot('../../HDSAviz_data/analysis_CO.txt')
+    # output_file('unemployment.html', title="unemployment.py example")
+    # show(p)
+# sa = dp.get_sa_data()
+ # make_plot(sa['CO'][0], np.array(['S1', 'ST']), 0.001)
