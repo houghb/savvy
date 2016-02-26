@@ -77,10 +77,10 @@ def make_plot(Dataframe, minvalues=0.01):
     # S1vals = df['S1']
     # S1vals = df['ST']
 
-    plottools = [BoxZoomTool(), ResetTool(), PreviewSaveTool(),
-                 ResizeTool(), PanTool(), PolySelectTool(),
-                 WheelZoomTool(), HoverTool(), BoxSelectTool()]
-    plottools = "hover"
+    # plottools = [BoxZoomTool(), ResetTool(), PreviewSaveTool(),
+    #             ResizeTool(), PanTool(), PolySelectTool(),
+    #             WheelZoomTool(), HoverTool(), BoxSelectTool()]
+    plottools = "hover, wheel_zoom, save, reset, resize"
 
     p = figure(plot_width=width, plot_height=height, title="",
                x_axis_type=None, y_axis_type=None,
