@@ -126,7 +126,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
             radii = (((np.log10(labels / labels[0])) +
                      labels.size) * (outer_radius - inner_radius) /
                      labels.size + inner_radius)
-            radii[-1]=inner_radius
+            radii[-1] = inner_radius
     else:
         labels = np.delete(labels, -1)
         radii = (outer_radius - inner_radius)*labels + inner_radius
