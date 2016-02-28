@@ -122,7 +122,6 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     #                (outer_radius - inner_radius) / labels.size +inner_radius)
     labels = np.append(labels, 0.0)
     if lgaxis is True:
-            pdb.set_trace()
             radii = (((np.log10(labels / labels[0])) +
                      labels.size) * (outer_radius - inner_radius) /
                      labels.size + inner_radius)
