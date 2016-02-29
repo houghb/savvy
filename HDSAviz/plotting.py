@@ -20,7 +20,7 @@ from bokeh.models import (BoxZoomTool, ResetTool, PreviewSaveTool,
 import data_processing as dp
 
 
-def make_plot(Dataframe, minvalues=0.01):
+def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     """Basic method to plot sensitivity anlaysis.
 
     This is the method to generate a bokeh plot followung the burtin example
@@ -30,11 +30,18 @@ def make_plot(Dataframe, minvalues=0.01):
 
     Parameters:
     --------------
-    Dataframe : Dataframe containing sensitivity analysis results to be plotted
-                {Name of csv file to be read into as a panda dataframe (String)
-                **Note file must be in same folder as script.**}
-                Delete upon change
+    dataframe : Dataframe containing sensitivity analysis results to be plotted
+
+    top: Integer indicating the number of parameters to display (highest
+                 sensitivity values)
+
     minvalues: Cutoff minimum for which parameters should be plotted (float)
+
+    stacked: Boolean indicating in bars should be stacked for each parameter.
+
+    lgaxis: Boolean indicating if log axis should be used (True) or if a
+            linear axis should be used (False).
+
 
     Returns:
     ---------------
@@ -44,7 +51,7 @@ def make_plot(Dataframe, minvalues=0.01):
     # tdf = pd.read_csv(Dataframe, delimiter=' ', skipinitialspace=True,
     #                  engine='python')
     # df = tdf
-    df = Dataframe
+    df = dataframe
     maxval = 0
     # Remove rows which have values less than cutoff values
     df = df[df['S1'] > minvalues]
@@ -53,15 +60,17 @@ def make_plot(Dataframe, minvalues=0.01):
 
     # Create dictionary of bar colors, assume up to 3 stats are plotted
     # per parameter.
-    colors = ["#0d3362", "#c64737", "black"]
-    s1color = np.array(["#0d3362"]*df.S1.size)
-    sTcolor = np.array(["#c64737"]*df.ST.size)
+    df = df.sort_values('ST', ascending=False)
+    df = df.head(top)
+    df = df.reset_index(drop=True)
+    colors = ["#0d3362", "#c64737"]
+    s1color = np.array(["#c64737"]*df.S1.size)
+    sTcolor = np.array(["#0d3362"]*df.ST.size)
     stat_color = OrderedDict()
     for i in range(0, 2):
         stat_color[i] = colors[i]
     # Reset index of dataframe.
-    df = df.sort('ST', ascending=False)
-    df = df.reset_index(drop=True)
+
     # Sizing parameters
     width = 800
     height = 800
@@ -71,16 +80,19 @@ def make_plot(Dataframe, minvalues=0.01):
     # Determine wedge size based off number of parameters
     big_angle = 2.0 * np.pi / (len(df)+1)
     # Determine division of wedges for plotting bars based on # stats plotted
-    small_angle = big_angle / (4)
+    if stacked is False:
+        small_angle = big_angle / (4)
+    else:
+        small_angle = big_angle / (3)
     # pdb.set_trace()
     # params = df['Parameter']
     # S1vals = df['S1']
     # S1vals = df['ST']
 
-    plottools = [BoxZoomTool(), ResetTool(), PreviewSaveTool(),
-                 ResizeTool(), PanTool(), PolySelectTool(),
-                 WheelZoomTool(), HoverTool(), BoxSelectTool()]
-    plottools = "hover"
+    # plottools = [BoxZoomTool(), ResetTool(), PreviewSaveTool(),
+    #             ResizeTool(), PanTool(), PolySelectTool(),
+    #             WheelZoomTool(), HoverTool(), BoxSelectTool()]
+    plottools = "hover, wheel_zoom, save, reset, resize"
 
     p = figure(plot_width=width, plot_height=height, title="",
                x_axis_type=None, y_axis_type=None,
@@ -108,12 +120,18 @@ def make_plot(Dataframe, minvalues=0.01):
     # pdb.set_trace()
     # extra_radii = (((np.log10(extra_labels / labels[0])) + labels.size) *
     #                (outer_radius - inner_radius) / labels.size +inner_radius)
-    radii = (((np.log10(labels / labels[0])) + labels.size) *
-             (outer_radius - inner_radius) / labels.size + inner_radius)
+    labels = np.append(labels, 0.0)
+    if lgaxis is True:
+            radii = (((np.log10(labels / labels[0])) +
+                     labels.size) * (outer_radius - inner_radius) /
+                     labels.size + inner_radius)
+            radii[-1] = inner_radius
+    else:
+        labels = np.delete(labels, -1)
+        radii = (outer_radius - inner_radius)*labels + inner_radius
 
     # Add zero label to labels and radii
-    labels = np.append(labels, 0.0)
-    radii = np.append(radii, inner_radius)
+
     # extra_radii = np.append(extra_radii, radii)
 
     # Adding axis lines and labels
@@ -124,14 +142,21 @@ def make_plot(Dataframe, minvalues=0.01):
     # Plot the values of each stat for each parameter.
     # radius of stat is the value of a statistic converted to the radial
     # value.
-    Cols = np.array(['ST', 'S1'])
+    Cols = np.array(['S1', 'ST'])
     for statistic in range(0, 2):
-        radius_of_stat = (((np.log10(df[Cols[statistic]] / labels[0])) +
-                          labels.size) * (outer_radius - inner_radius) /
-                          labels.size + inner_radius)
-
-        startA = -big_angle + angles + (2*statistic + 1)*small_angle
-        stopA = -big_angle + angles + (2*statistic + 2)*small_angle
+        if lgaxis is True:
+            radius_of_stat = (((np.log10(df[Cols[statistic]] / labels[0])) +
+                              labels.size) * (outer_radius - inner_radius) /
+                              labels.size + inner_radius)
+        else:
+            radius_of_stat = ((outer_radius - inner_radius) *
+                              df[Cols[statistic]] + inner_radius)
+        if stacked is False:
+            startA = -big_angle + angles + (2*statistic + 1)*small_angle
+            stopA = -big_angle + angles + (2*statistic + 2)*small_angle
+        else:
+            startA = -big_angle + angles + (1)*small_angle
+            stopA = -big_angle + angles + (2)*small_angle
         df[Cols[statistic]+'radial'] = pd.Series(radius_of_stat,
                                                  index=df.index)
         df[Cols[statistic]+'_start_angle'] = pd.Series(startA,
@@ -146,28 +171,28 @@ def make_plot(Dataframe, minvalues=0.01):
                          'y': np.append(np.zeros_like(inner_rad),
                                         np.zeros_like(inner_rad)),
                          'ymin': np.append(inner_rad, inner_rad),
-                         'ymax': pd.Series.append(df[Cols[0]+'radial'],
-                                                  df[Cols[1]+'radial']
+                         'ymax': pd.Series.append(df[Cols[1]+'radial'],
+                                                  df[Cols[0]+'radial']
                                                   ).reset_index(drop=True),
-                         'starts': pd.Series.append(df[Cols[0] +
+                         'starts': pd.Series.append(df[Cols[1] +
                                                     '_start_angle'],
-                                                    df[Cols[1] +
+                                                    df[Cols[0] +
                                                     '_start_angle']
                                                     ).reset_index(drop=True),
-                         'stops': pd.Series.append(df[Cols[0] +
+                         'stops': pd.Series.append(df[Cols[1] +
                                                       '_stop_angle'],
-                                                   df[Cols[1] +
+                                                   df[Cols[0] +
                                                       '_stop_angle']
                                                    ).reset_index(drop=True),
                          'Param': pd.Series.append(df.Parameter,
                                                        df.Parameter
                                                    ).reset_index(drop=True),
-                         'Colors': np.append(s1color, sTcolor),
-                         'Conf': pd.Series.append(df.S1_conf,
-                                                        df.ST_conf
+                         'Colors': np.append(sTcolor, s1color),
+                         'Conf': pd.Series.append(df.ST_conf,
+                                                        df.S1_conf
                                                   ).reset_index(drop=True),
-                         'Sens': pd.Series.append(df.S1,
-                                                  df.ST).reset_index(drop=True)
+                         'Sens': pd.Series.append(df.ST,
+                                                  df.S1).reset_index(drop=True)
                          })
 
     pdata_s = ColumnDataSource(pdata)
@@ -201,10 +226,10 @@ def make_plot(Dataframe, minvalues=0.01):
 
     p.rect([-40, -40, -40], [18, 0, -18], width=30, height=13,
            color=list(stat_color.values()))
-    p.text([-15, -15, -15], [18, 0, -18], text=Cols,
+    p.text([-15, -15, -15], [18, 0, -18], text=[Cols[1], Cols[0]],
            text_font_size="9pt", text_align="left", text_baseline="middle")
-    output_file('HoverTrial.html', title="HoverTrial.py example")
-    show(p)
-
-sa = dp.get_sa_data()
-make_plot(sa['CO'][0], 0.001)
+    # output_file('HoverTrial.html', title="HoverTrial.py example")
+    # show(p)
+    return p
+# sa = dp.get_sa_data()
+# make_plot(sa['CO'][0], 10, .001, True, True)
