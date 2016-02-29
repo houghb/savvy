@@ -11,7 +11,8 @@
 
 ## Challenges to make next deliverables
 ### Team issues:
-- Have yet to merge all of our branches back to master
+- Have yet to merge all of our branches back to master  
+
 ### Tech uncertainties and blockers
 - None so far with regards to plotting in Bokeh
 - Getting a large 2nd order data set by end of quarter (have started this analysis but it cold take several weeks)
