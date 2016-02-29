@@ -64,9 +64,9 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     df = df.reset_index(drop=True)
 
     # Create arrays of colors and order labels for plotting
-    colors = ["#0d3362", "#c64737"]
-    s1color = np.array(["#c64737"]*df.S1.size)
-    sTcolor = np.array(["#0d3362"]*df.ST.size)
+    colors = ["#a1d99b", "#31a354"]
+    s1color = np.array(["#31a354"]*df.S1.size)
+    sTcolor = np.array(["#a1d99b"]*df.ST.size)
 
     firstorder = np.array(["1st (S1)"]*df.S1.size)
     totalorder = np.array(["Total (ST)"]*df.S1.size)
@@ -105,7 +105,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
                x_axis_type=None, y_axis_type=None,
                x_range=(-420, 420), y_range=(-420, 420),
                min_border=0, outline_line_color="black",
-               background_fill_color="#f0e1d2", border_fill_color="#f0e1d2",
+               background_fill_color="#f2f2f2", border_fill_color="#f2f2f2",
                tools=plottools)
     # Specify labels for hover tool
     hover = p.select(dict(type=HoverTool))
@@ -127,12 +127,12 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     # circular axes and labels
     labels = np.power(10.0, np.arange(0, -3, -1))
 
-    # Set max radial line to correspong to 1.1* maximum value + error
+    # Set max radial line to correspond to 1.1 * maximum value + error
     maxval = max(df.ST)
     maxval_index = df.ST.argmax()
     maxval_conf = df.ST_conf[maxval_index]
     labels = np.append(labels, 0.0)
-    labels[0] = 1.1*(maxval+maxval_conf)
+    labels[0] = round(1.1*(maxval+maxval_conf), 1)
 
     # Determine if radial axis are log or linearly scaled
     if lgaxis is True:
