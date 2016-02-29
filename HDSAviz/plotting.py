@@ -67,6 +67,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     colors = ["#0d3362", "#c64737"]
     s1color = np.array(["#c64737"]*df.S1.size)
     sTcolor = np.array(["#0d3362"]*df.ST.size)
+
     firstorder = np.array(["1st (S1)"]*df.S1.size)
     totalorder = np.array(["Total (ST)"]*df.S1.size)
 
