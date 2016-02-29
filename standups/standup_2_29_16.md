@@ -8,6 +8,7 @@
 - Merge the outstanding pull request with master.
 - Add option to create different plot if # of parameters drops below certain number (Histogram?)
 - Incorporate 2nd order information through Bokeh tools (format yet to be determined)
+- Continue to expand functionality of data processing module with a few of our "wish list" functions.
 
 ## Challenges to make next deliverables
 ### Team issues:
