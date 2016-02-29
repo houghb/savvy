@@ -228,8 +228,8 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
            color=list(stat_color.values()))
     p.text([-15, -15, -15], [18, 0, -18], text=[Cols[1], Cols[0]],
            text_font_size="9pt", text_align="left", text_baseline="middle")
-    output_file('HoverTrial.html', title="HoverTrial.py example")
-    show(p)
-
-sa = dp.get_sa_data()
-make_plot(sa['CO'][0], 10, .001, True, True)
+    # output_file('HoverTrial.html', title="HoverTrial.py example")
+    # show(p)
+    return p
+# sa = dp.get_sa_data()
+# make_plot(sa['CO'][0], 10, .001, True, True)
