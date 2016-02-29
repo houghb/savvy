@@ -6,7 +6,7 @@ HDSAviz was written to visualize the total, first order, and second order sensit
 
 ----
 ### Directory structure
-The contents of the package are organized in a structure as follows
+The package is organized as follows:
 ```
 HDSAViz Home (master)
 |     Data_Description.md
@@ -39,7 +39,7 @@ HDSAViz Home (master)
 ----
 ### Software dependencies and license information
 
-**All the required software is open source.**  The implementation was done using the following languages and packages.  
+**All the required software is open source.**  The implementation was done using the following language and packages.  
 
 **Programming language:**   
 Python version 2.7  ([https://www.python.org/](https://www.python.org/))
@@ -54,7 +54,7 @@ Python version 2.7  ([https://www.python.org/](https://www.python.org/))
 __coming soon__  - versions of the packages used.
 
 **License information:**   
-The choice of licence is BSD 2-clause “Simplified” License. The objective behind this choice of licensing is to make the content reproducible and make it useful for as many people as possible. The idea is to maximize the two-way collaborations with minimum restrictions, so that developers of other projects can easily utilize, patch, improve, and cite this code.
+HDSAviz is licensed under a BSD 2-clause “Simplified” License. The objective behind this choice of licensing is to make the content reproducible and make it useful for as many people as possible. We want to maximize the two-way collaborations with minimum restrictions, so that developers of other projects can easily utilize, patch, improve, and cite this code.
 For detailed description of the contents of license please refer to [License](https://github.com/houghb/HDSAviz/blob/master/LICENSE)
 
 ----
