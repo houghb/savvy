@@ -11,7 +11,7 @@
 
 ## Challenges to make next deliverables
 ### Team issues:
-- Have yet to merge all of our branches back to master  
+- Have yet to merge all of our branches back to master because final branch to be merged was dependent on the other two pull requests, and changes in those branches require significant revisions to the remaining branch. 
 
 ### Tech uncertainties and blockers
 - None so far with regards to plotting in Bokeh
