@@ -64,7 +64,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     df = df.reset_index(drop=True)
 
     # Create arrays of colors and order labels for plotting
-    colors = ["#a1d99b", "#31a354"]
+    colors = ["#a1d99b", "#31a354", "#546775", "#a8cfeb"]
     s1color = np.array(["#31a354"]*df.S1.size)
     sTcolor = np.array(["#a1d99b"]*df.ST.size)
     errs1color = np.array(["#a8cfeb"]*df.S1.size)
@@ -74,10 +74,12 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
 
     # Create Dictionary of colors
     stat_color = OrderedDict()
+    error_color = OrderedDict()
     for i in range(0, 2):
         stat_color[i] = colors[i]
     # Reset index of dataframe.
-
+    for i in range(2, 4):
+        error_color[i] = colors[i]
     # Sizing parameters
     width = 800
     height = 800
@@ -208,6 +210,8 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
         df[Cols[statistic]+'_stop_angle'] = pd.Series(stopA,
                                                       index=df.index)
 
+        # df[Cols[statistic]+'_err_angle'] = pd.Series((startA+stopA)/2,
+        #                                              index=df.index)
         inner_rad = np.ones_like(angles)*inner_radius
         df[Cols[statistic]+'lower'] = df[Cols[statistic]+'lower'].fillna(90)
     # Store plotted values into dictionary to be add glyphs
@@ -269,11 +273,20 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
                     -big_angle+line_angles, -big_angle+line_angles,
                     color="black")
-    # p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
-    #                 pdata['Err_Angle'],
-    #                 pdata['Err_Angle'],
-    #                 color=pdata['Error Colors'])
+    p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
+                    pdata['Err_Angle'],
+                    pdata['Err_Angle'],
+                    color=pdata['Error Colors'])
 
+    p.annular_wedge(0, 0, pdata['Lower'], pdata['Lower'],
+                    pdata['starts'],
+                    pdata['stops'],
+                    color=pdata['Error Colors'])
+
+    p.annular_wedge(0, 0, pdata['Upper'], pdata['Upper'],
+                    pdata['starts'],
+                    pdata['stops'],
+                    color=pdata['Error Colors'])
     # Placement of parameter labels
     xr = (radii[0]*1.1)*np.cos(np.array(-big_angle/2 + angles))
     yr = (radii[0]*1.1)*np.sin(np.array(-big_angle/2 + angles))
@@ -282,16 +295,19 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     label_angle[label_angle < -np.pi/2] += np.pi
 
     # Placing Labels and Legend
+    legend_text = ['ST', 'ST Conf', 'S1', 'S1 Conf']
     p.text(xr, yr, df.Parameter, angle=label_angle,
            text_font_size="9pt", text_align="center", text_baseline="middle")
 
-    p.rect([-40, -40, -40], [18, 0, -18], width=30, height=13,
+    p.rect([-40, -40], [30, -10], width=30, height=13,
            color=list(stat_color.values()))
-    p.text([-15, -15, -15], [18, 0, -18], text=[Cols[1], Cols[0]],
+    p.rect([-40, -40], [10, -30], width=30, height=1,
+           color=list(error_color.values()))
+    p.text([-15, -15, -15, -15], [30, 10, -10, -30], text=legend_text,
            text_font_size="9pt", text_align="left", text_baseline="middle")
     # output_file('HoverTrial.html', title="HoverTrial.py example")
     # show(p)
     return p
 # sa = dp.get_sa_data()
 
-# make_plot(sa['totaltars'][0], 20, 0, False, False)
+# make_plot(sa['totaltars'][0], 20, 0, True, True)
