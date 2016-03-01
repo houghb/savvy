@@ -17,10 +17,6 @@ HDSAViz Home (master)
 |  
 |----- doc
 |     |
-|----- experiments
-|     |   ... misc. temporary files -- will be removed upon first release of project...
-|     |   README.md
-|     |
 |----- HDSAviz
 |     |   __init__.py
 |     |   data_processing.py
@@ -61,8 +57,6 @@ For detailed description of the contents of license please refer to [License](ht
 ### Summary of Folder Contents
 
 **[doc](https://github.com/houghb/HDSAviz/tree/master/doc)** - To be completed.  This folder will contain the project documentation.
-
-**[experiments](https://github.com/houghb/HDSAviz/tree/master/experiments)** - The files in this experiments folder are pieces of code or ideas that we're exploring, but don't know if they will be integrated into the final HDSAviz package.  This folder will be removed at the first "official" release of the package.
 
 **[HDSAviz](https://github.com/houghb/HDSAviz/tree/master/HDSAviz)** - Houses the driver and modules to visualize the sensitivity analysis results.  Use the functions in `sensitivity_tools.py` to carry out a sensitivity analysis on your own model using SALib.  Once you've run your analysis, the functions in `data_processing.py` will read and clean up your results so they can be visualized with plots described in `plotting.py`.
 
