@@ -67,7 +67,8 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     colors = ["#a1d99b", "#31a354"]
     s1color = np.array(["#31a354"]*df.S1.size)
     sTcolor = np.array(["#a1d99b"]*df.ST.size)
-
+    errs1color = np.array(["#a8cfeb"]*df.S1.size)
+    errsTcolor = np.array(["#546775"]*df.ST.size)
     firstorder = np.array(["1st (S1)"]*df.S1.size)
     totalorder = np.array(["Total (ST)"]*df.S1.size)
 
@@ -99,7 +100,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     # plottools = [BoxZoomTool(), ResetTool(), PreviewSaveTool(),
     #             ResizeTool(), PanTool(), PolySelectTool(),
     #             WheelZoomTool(), HoverTool(), BoxSelectTool()]
-    plottools = "hover, wheel_zoom, save, reset, resize"
+    plottools = "hover, wheel_zoom, save, reset, resize"  # , tap"
     # Initialize figure with tools, coloring, etc.
     p = figure(plot_width=width, plot_height=height, title="",
                x_axis_type=None, y_axis_type=None,
@@ -128,11 +129,11 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     labels = np.power(10.0, np.arange(0, -3, -1))
 
     # Set max radial line to correspond to 1.1 * maximum value + error
-    maxval = max(df.ST)
-    maxval_index = df.ST.argmax()
-    maxval_conf = df.ST_conf[maxval_index]
+    maxvalST = max(df.ST+df.ST_conf)
+    maxvalS1 = max(df.S1+df.S1_conf)
+    maxval = max(maxvalST, maxvalS1)
     labels = np.append(labels, 0.0)
-    labels[0] = round(1.1*(maxval+maxval_conf), 1)
+    labels[0] = round(1.1*maxval, 1)
 
     # Determine if radial axis are log or linearly scaled
     if lgaxis is True:
@@ -159,23 +160,56 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
             radius_of_stat = (((np.log10(df[Cols[statistic]] / labels[0])) +
                               labels.size) * (outer_radius - inner_radius) /
                               labels.size + inner_radius)
+            lower_of_stat = (((np.log10((df[Cols[statistic]] -
+                               df[Cols[statistic]+'_conf']) / labels[0])) +
+                              labels.size) * (outer_radius - inner_radius) /
+                             labels.size + inner_radius)
+            higher_of_stat = (((np.log10((df[Cols[statistic]] +
+                               df[Cols[statistic]+'_conf']) / labels[0])) +
+                              labels.size) * (outer_radius - inner_radius) /
+                              labels.size + inner_radius)
         else:
+
             radius_of_stat = ((outer_radius - inner_radius) *
                               df[Cols[statistic]]/labels[0] + inner_radius)
+            lower_of_stat = ((outer_radius - inner_radius) *
+                             (df[Cols[statistic]] -
+                             df[Cols[statistic]+'_conf'])/labels[0] +
+                             inner_radius)
+            higher_of_stat = ((outer_radius - inner_radius) *
+                              ((df[Cols[statistic]] +
+                               df[Cols[statistic]+'_conf'])/labels[0]) +
+                              inner_radius)
+
         if stacked is False:
             startA = -big_angle + angles + (2*statistic + 1)*small_angle
             stopA = -big_angle + angles + (2*statistic + 2)*small_angle
+            df[Cols[statistic]+'_err_angle'] = pd.Series((startA+stopA)/2,
+                                                         index=df.index)
         else:
             startA = -big_angle + angles + (1)*small_angle
             stopA = -big_angle + angles + (2)*small_angle
+            if statistic == 0:
+                df[Cols[statistic]+'_err_angle'] = pd.Series((startA*2 +
+                                                              stopA)/3,
+                                                             index=df.index)
+            if statistic == 1:
+                df[Cols[statistic]+'_err_angle'] = pd.Series((startA +
+                                                              stopA*2)/3,
+                                                             index=df.index)
         df[Cols[statistic]+'radial'] = pd.Series(radius_of_stat,
                                                  index=df.index)
+        df[Cols[statistic]+'upper'] = pd.Series(higher_of_stat,
+                                                index=df.index)
+        df[Cols[statistic]+'lower'] = pd.Series(lower_of_stat,
+                                                index=df.index)
         df[Cols[statistic]+'_start_angle'] = pd.Series(startA,
                                                        index=df.index)
         df[Cols[statistic]+'_stop_angle'] = pd.Series(stopA,
                                                       index=df.index)
-        inner_rad = np.ones_like(angles)*inner_radius
 
+        inner_rad = np.ones_like(angles)*inner_radius
+        df[Cols[statistic]+'lower'] = df[Cols[statistic]+'lower'].fillna(90)
     # Store plotted values into dictionary to be add glyphs
     pdata = pd.DataFrame({
                          'x': np.append(np.zeros_like(inner_rad),
@@ -200,24 +234,34 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
                                                        df.Parameter
                                                    ).reset_index(drop=True),
                          'Colors': np.append(sTcolor, s1color),
+                         'Error Colors': np.append(errsTcolor, errs1color),
                          'Conf': pd.Series.append(df.ST_conf,
                                                         df.S1_conf
                                                   ).reset_index(drop=True),
                          'Order': np.append(totalorder, firstorder),
-                         'Sens': pd.Series.append(df.ST,
-                                                  df.S1).reset_index(drop=True)
+                         'Sens': pd.Series.append(df.ST, df.S1
+                                                  ).reset_index(drop=True),
+                         'Lower': pd.Series.append(df.STlower,
+                                                   df.S1lower
+                                                   ).reset_index(drop=True),
+                         'Upper': pd.Series.append(df.STupper,
+                                                   df.S1upper,
+                                                   ).reset_index(drop=True),
+                         'Err_Angle': pd.Series.append(df.ST_err_angle,
+                                                       df.S1_err_angle,
+                                                       ).reset_index(drop=True)
                          })
 
     pdata_s = ColumnDataSource(pdata)
     # Specify that the plotted bars are the only thing to activate hovertool
-    gh = p.annular_wedge(x='x', y='y', inner_radius='ymin',
-                         outer_radius='ymax',
-                         start_angle='starts',
-                         end_angle='stops',
-                         color='Colors',
-                         source=pdata_s
-                         )
-    hover.renderers = [gh]
+    hoverable = p.annular_wedge(x='x', y='y', inner_radius='ymin',
+                                outer_radius='ymax',
+                                start_angle='starts',
+                                end_angle='stops',
+                                color='Colors',
+                                source=pdata_s
+                                )
+    hover.renderers = [hoverable]
 
     # dictdata = df.set_index('Parameter').to_dict()
 
@@ -225,10 +269,14 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
                     -big_angle+line_angles, -big_angle+line_angles,
                     color="black")
+    # p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
+    #                 pdata['Err_Angle'],
+    #                 pdata['Err_Angle'],
+    #                 color=pdata['Error Colors'])
 
     # Placement of parameter labels
-    xr = radii[0]*np.cos(np.array(-big_angle/2 + angles))
-    yr = radii[0]*np.sin(np.array(-big_angle/2 + angles))
+    xr = (radii[0]*1.1)*np.cos(np.array(-big_angle/2 + angles))
+    yr = (radii[0]*1.1)*np.sin(np.array(-big_angle/2 + angles))
 
     label_angle = np.array(-big_angle/2+angles)
     label_angle[label_angle < -np.pi/2] += np.pi
@@ -245,4 +293,5 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     # show(p)
     return p
 # sa = dp.get_sa_data()
-# make_plot(sa['CO'][0], 10, .001, True, True)
+
+# make_plot(sa['totaltars'][0], 20, 0, False, False)
