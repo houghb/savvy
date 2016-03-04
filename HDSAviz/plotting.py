@@ -88,7 +88,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     # Initialize figure with tools, coloring, etc.
     p = figure(plot_width=width, plot_height=height, title="",
                x_axis_type=None, y_axis_type=None,
-               x_range=(-420, 420), y_range=(-420, 420),
+               x_range=(-350, 350), y_range=(-350, 350),
                min_border=0, outline_line_color="#e6e6e6",
                background_fill_color="#e6e6e6", border_fill_color="#e6e6e6",
                tools=plottools)
