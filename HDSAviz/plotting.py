@@ -12,6 +12,7 @@ import pandas as pd
 
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.models import HoverTool
+from bokeh.charts import Bar
 
 
 def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
@@ -60,6 +61,33 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     errsTcolor = np.array(["#546775"]*df.ST.size)
     firstorder = np.array(["1st (S1)"]*df.S1.size)
     totalorder = np.array(["Total (ST)"]*df.S1.size)
+
+    if len(df) <= 5:
+        if stacked is False:
+            data = {
+                    'Sensitivity': pd.Series.append(df.ST, df.S1),
+                    'Parameter': pd.Series.append(df.Parameter, df.Parameter),
+                    'Order': np.append(np.array(['ST']*len(df)),
+                                       np.array(['S1']*len(df))),
+                    'Confidence': pd.Series.append(df.ST_conf,
+                                                   df.S1_conf)
+                    }
+            p = Bar(data, values='Sensitivity', label=['Parameter'],
+                    group='Order', legend='top_right',
+                    color=["#31a354", "#a1d99b"])
+        else:
+            data = {
+                    'Sensitivity': pd.Series.append(df.S1, (df.ST-df.S1)),
+                    'Parameter': pd.Series.append(df.Parameter, df.Parameter),
+                    'Order': np.append(np.array(['S1']*len(df)),
+                                       np.array(['ST']*len(df))),
+                    'Confidence': pd.Series.append(df.S1_conf,
+                                                   df.ST_conf)
+                    }
+            p = Bar(data, values='Sensitivity', label=['Parameter'],
+                    color=['Order'], legend='top_right',
+                    stack='Order', palette=["#31a354", "#a1d99b"])
+        return p
 
     # Create Dictionary of colors
     stat_color = OrderedDict()
