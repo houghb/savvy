@@ -139,8 +139,10 @@ def get_sa_data(path='../../HDSAviz_data/'):
     filenames = [filename for filename in os.listdir(
                 path) if filename.startswith('analysis')]
     # These two functional groups are not present in the light oil fraction
-    filenames.remove('analysis_light_aromatic-C-C.txt')
-    filenames.remove('analysis_light_aromatic-methoxyl.txt')
+    if 'analysis_light_aromatic-C-C.txt' in filenames:
+        filenames.remove('analysis_light_aromatic-C-C.txt')
+    if 'analysis_light_aromatic-methoxyl.txt' in filenames:    
+        filenames.remove('analysis_light_aromatic-methoxyl.txt')
 
     # Make a dictionary where keys are the different output measures
     # (one for each analysis file) and values are lists of dataframes
