@@ -27,4 +27,4 @@
 
 - Writing meaningful unit tests for interactive components
 
-- The newer, larger data set poses some potential issues with regards to the speed of generating certain plots (each of the 30 new analysis files is about 85,000 lines x 4 columns).  Processing information from pandas dataframes with this data is a little slow and using ipywidgets for tools (Bokeh tools may be faster).
+- The newer, larger data set poses some potential issues with regards to the speed of generating certain plots (each of the 30 new analysis files is about 85,000 lines x 4 columns).  Processing information from pandas dataframes with this data is a little slow and using ipywidgets for tools can be slow as well(Bokeh tools may be faster).
