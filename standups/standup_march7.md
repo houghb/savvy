@@ -4,7 +4,7 @@
 - Improved the visual appeal of 1st and total order plot (label placement, colors, etc)
 - Added error bars to show confidence interval data
 - Added condition to create a histogram instead of normal plot if the data set shrinks to a small subset (the original plot looked awkward with only a few bars).
- ### - How it compares to the plane -
+ ### - How it compares to the plan -
  - Still need to merge the interactive components into the rest of the code. Otherwise on schedule
 
  ### - How to get back on schedule
