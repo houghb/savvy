@@ -77,6 +77,7 @@ def analyze_sensitivity(problem, Y, column, delimiter, order, name,
                  contain results that correspond to the same line of the
                  param_sets generated in gen_params()
     column     : integer specifying the column number of the results to analyze
+                 (zero indexed)
     delimiter  : string specifying the column delimiter used in the results
     order      : int; the maximum order of sensitivity indices [1 or 2]
     name       : string with the name of the output measure to use when saving
@@ -91,12 +92,12 @@ def analyze_sensitivity(problem, Y, column, delimiter, order, name,
     """
 
     if parallel:
-        call('python -m SALib.analyze.sobol -p %s -Y %s'
-             '-c %s --delimiter=%s --max-order=%s --parallel --processors=%s'
-             '> analysis_%s.txt' %
-             (problem, Y, column, delimiter, order, processors, name),
+        call('python -m SALib.analyze.sobol -p %s -Y %s -c %i --delimiter %s '
+             '--max-order %i --parallel --processors %i > analysis_%s.txt'
+             % (problem, Y, column, delimiter, order, processors, name),
              shell=True)
+
     else:
         call('python -m SALib.analyze.sobol -p %s -Y %s'
-             '-c %s --delimiter=%s --max-order=%s > analysis_%s.txt' %
+             ' -c %s --delimiter %s --max-order %s > analysis_%s.txt' %
              (problem, Y, column, delimiter, order, name), shell=True)

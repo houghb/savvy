@@ -139,49 +139,66 @@ def get_sa_data(path='../../HDSAviz_data/'):
     filenames = [filename for filename in os.listdir(
                 path) if filename.startswith('analysis')]
     # These two functional groups are not present in the light oil fraction
-    filenames.remove('analysis_light_aromatic-C-C.txt')
-    filenames.remove('analysis_light_aromatic-methoxyl.txt')
+    if 'analysis_light_aromatic-C-C.txt' in filenames:
+        filenames.remove('analysis_light_aromatic-C-C.txt')
+    if 'analysis_light_aromatic-methoxyl.txt' in filenames:    
+        filenames.remove('analysis_light_aromatic-methoxyl.txt')
 
     # Make a dictionary where keys are the different output measures
     # (one for each analysis file) and values are lists of dataframes
     # with the first/total analysis results, and the second order results.
     sens_dfs = {}
-    for i, filename in enumerate(filenames):
+    for filename in filenames:
         name = filename[9:].replace('.txt', '')
 
         with open(path + filename) as result:
             contents = []
             contents.append(result.readlines())
             # find the line number in the file where 2nd order results appear
-            for i, line in enumerate(contents[0]):
+            for j, line in enumerate(contents[0]):
                 # End this loop when you reach the line that separates
                 # the first/total indices from the second order indices
                 if line.startswith('\n'):
                     break
                 # If no second order indices in file
                 else:
-                    i = False
+                    j = False
             # If there are second order indices in the file
-            if i:
+            if j:
                 sens_dfs[name] = [pd.read_csv(path + filename, sep=' ',
-                                          nrows=(i - 1)),
-                              pd.read_csv(path + filename, sep=' ',
-                                          skiprows=i)
-                              ]
+                                              nrows=(j - 1)),
+                                  pd.read_csv(path + filename, sep=' ',
+                                              skiprows=j)
+                                  ]
             else:
                 sens_dfs[name] = [pd.read_csv(path + filename, sep=' '),
-                              False]
+                                  False]
 
-        # Convert negative values to 0 (all negative values are close to
-        # zero already, negative values are the result of machine precision
-        # issues or setting n too low when generating the parameter sets)
-        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1'] = 0
+        # Deal with negative values.  All negative values appear to be close
+        # to zero already; they are the result of machine precision issues or
+        # setting n too low when generating parameter sets.  To properly
+        # correct this issue you should re-run your model with n greater,
+        # but sometimes that is too expensive so this is a hack to allow
+        # display of them in a logical way.
+        # .
+        # adjust confidence interval to account for shifting sensitivity value
+        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1_conf'] = (
+            sens_dfs[name][0]['S1_conf'] + sens_dfs[name][0]['S1'] - 0.0001)
+        # set the new sensitivity value = 0.0001
+        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1'] = 0.0001
+        # do the same for total and second order indices
+        sens_dfs[name][0].ix[sens_dfs[name][0]['ST'] < 0, 'ST_conf'] = (
+            sens_dfs[name][0]['ST_conf'] + sens_dfs[name][0]['ST'] - 0.0001)
+        sens_dfs[name][0].ix[sens_dfs[name][0]['ST'] < 0, 'ST'] = 0.0001
         if isinstance(sens_dfs[name][1], pd.DataFrame):
-            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2'] = 0
+            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2_conf'] = (
+                sens_dfs[name][1]['S2_conf'] + sens_dfs[name][1]['S2'] -
+                0.0001)
+            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2'] = 0.0001
 
         # Change 'rxn' to 'k' for consistency with inputs file
         sens_dfs[name][0].Parameter = (sens_dfs[name][0].Parameter
-                                   .str.replace('rxn', 'k', case=False))
+                                       .str.replace('rxn', 'k', case=False))
 
     return sens_dfs
 

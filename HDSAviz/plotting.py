@@ -12,6 +12,7 @@ import pandas as pd
 
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.models import HoverTool
+from bokeh.charts import Bar
 
 
 def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
@@ -60,6 +61,33 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     errsTcolor = np.array(["#546775"]*df.ST.size)
     firstorder = np.array(["1st (S1)"]*df.S1.size)
     totalorder = np.array(["Total (ST)"]*df.S1.size)
+
+    if len(df) <= 5:
+        if stacked is False:
+            data = {
+                    'Sensitivity': pd.Series.append(df.ST, df.S1),
+                    'Parameter': pd.Series.append(df.Parameter, df.Parameter),
+                    'Order': np.append(np.array(['ST']*len(df)),
+                                       np.array(['S1']*len(df))),
+                    'Confidence': pd.Series.append(df.ST_conf,
+                                                   df.S1_conf)
+                    }
+            p = Bar(data, values='Sensitivity', label=['Parameter'],
+                    group='Order', legend='top_right',
+                    color=["#31a354", "#a1d99b"])
+        else:
+            data = {
+                    'Sensitivity': pd.Series.append(df.S1, (df.ST-df.S1)),
+                    'Parameter': pd.Series.append(df.Parameter, df.Parameter),
+                    'Order': np.append(np.array(['S1']*len(df)),
+                                       np.array(['ST']*len(df))),
+                    'Confidence': pd.Series.append(df.S1_conf,
+                                                   df.ST_conf)
+                    }
+            p = Bar(data, values='Sensitivity', label=['Parameter'],
+                    color=['Order'], legend='top_right',
+                    stack='Order', palette=["#31a354", "#a1d99b"])
+        return p
 
     # Create Dictionary of colors
     stat_color = OrderedDict()
@@ -291,18 +319,27 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     return p
 
 
-def make_second_order_heatmap(df, name=''):
+def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
     """
     Plot a heat map of the second order sensitivity indices from a given
-    dataframe.
+    dataframe.  If you are choosing a high value of `top` then making
+    this plot gets expensive and it is recommended to set mirror to False.
 
     Parameters:
     -----------
-    df   : The dataframe with second order sensitivity indices. This
-           dataframe should be formatted in the standard output format
-           from a Sobol sensitivity analysis in SALib.
-    name : An optional string indicating the name of the output measure
-           you are plotting.
+    df     : The dataframe with second order sensitivity indices. This
+             dataframe should be formatted in the standard output format
+             from a Sobol sensitivity analysis in SALib.
+    top    : An integer specifying the number of parameter interactions to
+             plot (those with the 'top' greatest values are displayed).
+    name   : An optional string indicating the name of the output measure
+             you are plotting.
+    mirror : A boolean indicating whether you would like to plot the mirror
+             image (reflection across the y=-1 axis).  This mirror image
+             contains the same information as plotted already, but will increase
+             the computation time for large dataframes.
+    include: a list of parameters that you would like to make sure are shown
+             on the heatmap (even if they are not in the top subset you specify)
 
     Returns:
     --------
@@ -313,9 +350,17 @@ def make_second_order_heatmap(df, name=''):
     colors = ["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6",
               "#4292c6", "#2171b5", "#08519c", "#08306b"]
 
+    # Make a new dataframe with only the top parameters
+    df_top = df.sort_values('S2', ascending=False).head(top)
+#     df = df.head(top)
+#     df = df.reset_index(drop=True)
+
     # Make a list of all the parameters that interact with each other
     labels = list(set(
-        [x for x in pd.concat([df.Parameter_1, df.Parameter_2])]))
+        [x for x in pd.concat([df_top.Parameter_1, df_top.Parameter_2])]))
+    for item in include:
+        if item not in labels:
+            labels.append(item)
     xlabels = labels
     ylabels = labels
 
@@ -331,11 +376,20 @@ def make_second_order_heatmap(df, name=''):
         for py in ylabels:
             xlabel.append(px)
             ylabel.append(py)
+            # sens is a dataframe with S2 and S2_conf that is stored for
+            # each box of the heatmap
             sens = (df[df.Parameter_1.isin([px]) & df.Parameter_2.isin([py])]
                     .ix[:, ['S2', 'S2_conf']])
-            if sens.empty:
+            # dfs can be empty if there are no corresponding pairs in the
+            # source dataframe (for example a parameter interacting with
+            # itself).
+            if sens.empty and not mirror:
+                s2.append(float('NaN'))
+                s2_conf.append(float('NaN'))
+                color.append("#b3b3b3")
+            elif sens.empty and mirror:
                 # This heat map is symmetric across the diagonal, so this
-                # if statement populates the mirror image
+                # if statement populates the mirror image if you've chosen to
                 sens_mirror = (df[df.Parameter_1.isin([py]) &
                                   df.Parameter_2.isin([px])]
                                .ix[:, ['S2', 'S2_conf']])
@@ -368,7 +422,7 @@ def make_second_order_heatmap(df, name=''):
     p.axis.major_tick_line_color = None
     p.axis.major_label_text_font_size = "8pt"
     p.axis.major_label_standoff = 0
-    p.xaxis.major_label_orientation = 0.6
+    p.xaxis.major_label_orientation = 1.1
 
     p.rect("xlabel", "ylabel", 1, 1, source=source,
            color="color", line_color=None)
