@@ -1,7 +1,16 @@
+"""
+This library adds the interactive features to basic plots
+for the sensitivity analysis
 
-# coding: utf-8
-
-# In[25]:
+Dependencies:
+plotting.py
+data_processing.py
+matplotlib
+numpy
+pandas
+os
+bokeh
+"""
 
 import data_processing as dp
 from plotting import make_plot
@@ -20,7 +29,6 @@ from bokeh.models.tools import (BoxZoomTool, ResetTool,
                                 ResizeTool,
                                 PanTool, PolySelectTool,
                                 WheelZoomTool)
-
 
 
 from ipywidgets import FloatSlider
@@ -67,8 +75,8 @@ def plot_all_outcomes_burtin(
     for i in range(len(sa_dict)):
         p = make_plot(outcomes_array[i], 100, deci1, True, True)
         p.title = ('Single order and total order Sensitivity plots' +
-                    'for S1: >= ' + str(deci1) + ' and ' + 'ST: >= ' +
-                    str(deci1))
+                   'for S1: >= ' + str(deci1) + ' and ' + 'ST: >= ' +
+                   str(deci1))
         p.title_text_align = 'center'
         p.title_text_font_size = '10pt'
         tabs_dictionary[i] = Panel(child=p, title=sa_dict.keys()[i])
@@ -126,7 +134,7 @@ def short_tabs_demo(minimum_S1_limits_in_decimal_places):
     p1.title_text_align = 'center'
     p1.title_text_font_size = '10pt'
 
-    p2 = make_plot(sa_dict['CO2'][0],100,deci1)
+    p2 = make_plot(sa_dict['CO2'][0], 100, deci1)
     p2.title = ('Single order and total order Sensitivity plots' +
                 'showing parameters ' +
                 'for which S1: >= ' + str(deci1) + ' and ' +
@@ -162,6 +170,7 @@ def short_interactive_demo():
     return interact(short_tabs_demo,
                     minimum_S1_limits_in_decimal_places=slider1)
 
+
 # for trial runs please uncomment the following when files are in
 # correct folder
 """
@@ -173,39 +182,5 @@ Small demo's with two outcomes(CO and CO2) plotted as tabs.
 """
 The interactive plots for all Outcomes with all outcomes as tab.
 """
-print
 # plot_all_outcomes_burtin(4, 4)
 # Interact_with_burtin_plots()
-
-
-# In[23]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[24]:
-
-Interact_with_burtin_plots()
-
-
-# In[8]:
-
-outcomes_array = []
-for files in sa_dict.keys():
-    outcomes_array.append(sa_dict[files][0])
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
