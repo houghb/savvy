@@ -141,7 +141,6 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
     # circular axes and labels
     minlabel = min(round(np.log10(min(df.ST))), round(np.log10(min(df.S1))))
     labels = np.power(10.0, np.arange(0, minlabel-1, -1))
-    print minlabel
     # Set max radial line to correspond to 1.1 * maximum value + error
     maxvalST = max(df.ST+df.ST_conf)
     maxvalS1 = max(df.S1+df.S1_conf)
