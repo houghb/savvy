@@ -293,7 +293,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
         p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
                         pdata['Err_Angle'],
                         pdata['Err_Angle'],
-                        color=pdata['Error Colors'], line_width=2.0)
+                        color=pdata['Error Colors'], line_width=1.0)
 
         p.annular_wedge(0, 0, pdata['Lower'], pdata['Lower'],
                         pdata['starts'],
