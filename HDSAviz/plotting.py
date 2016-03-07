@@ -15,7 +15,8 @@ from bokeh.models import HoverTool
 from bokeh.charts import Bar
 
 
-def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
+def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
+              errorbar=True, showS1=True, showST=True):
     """Basic method to plot sensitivity anlaysis.
 
     This is the method to generate a bokeh plot similar to the burtin example
@@ -44,8 +45,8 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     df = dataframe
 
     # Remove rows which have values less than cutoff values
-    df = df[df['S1'] > minvalues]
     df = df[df['ST'] > minvalues]
+    df = df[df['S1'] > minvalues]
     df = df.dropna()
 
     # Only keep top values indicated by variable top
@@ -138,8 +139,9 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     angles = np.pi/2 - big_angle/2 - df.index.to_series()*big_angle
 
     # circular axes and labels
-    labels = np.power(10.0, np.arange(0, -3, -1))
-
+    minlabel = min(round(np.log10(min(df.ST))), round(np.log10(min(df.S1))))
+    labels = np.power(10.0, np.arange(0, minlabel-1, -1))
+    print minlabel
     # Set max radial line to correspond to 1.1 * maximum value + error
     maxvalST = max(df.ST+df.ST_conf)
     maxvalS1 = max(df.S1+df.S1_conf)
@@ -265,8 +267,12 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
                                                        df.S1_err_angle,
                                                        ).reset_index(drop=True)
                          })
-
+    if showS1 is False:
+        pdata = pdata.head(len(df))
+    if showST is False:
+        pdata = pdata.tail(len(df))
     pdata_s = ColumnDataSource(pdata)
+
     # Specify that the plotted bars are the only thing to activate hovertool
     hoverable = p.annular_wedge(x='x', y='y', inner_radius='ymin',
                                 outer_radius='ymax',
@@ -283,20 +289,22 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True):
     p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
                     -big_angle+line_angles, -big_angle+line_angles,
                     color="#999999")
-    p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
-                    pdata['Err_Angle'],
-                    pdata['Err_Angle'],
-                    color=pdata['Error Colors'])
+    # Add error bars
+    if errorbar is True:
+        p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
+                        pdata['Err_Angle'],
+                        pdata['Err_Angle'],
+                        color=pdata['Error Colors'], line_width=2.0)
 
-    p.annular_wedge(0, 0, pdata['Lower'], pdata['Lower'],
-                    pdata['starts'],
-                    pdata['stops'],
-                    color=pdata['Error Colors'])
+        p.annular_wedge(0, 0, pdata['Lower'], pdata['Lower'],
+                        pdata['starts'],
+                        pdata['stops'],
+                        color=pdata['Error Colors'], line_width=2.0)
 
-    p.annular_wedge(0, 0, pdata['Upper'], pdata['Upper'],
-                    pdata['starts'],
-                    pdata['stops'],
-                    color=pdata['Error Colors'])
+        p.annular_wedge(0, 0, pdata['Upper'], pdata['Upper'],
+                        pdata['starts'],
+                        pdata['stops'],
+                        color=pdata['Error Colors'], line_width=2.0)
     # Placement of parameter labels
     xr = (radii[0]*1.1)*np.cos(np.array(-big_angle/2 + angles))
     yr = (radii[0]*1.1)*np.sin(np.array(-big_angle/2 + angles))
