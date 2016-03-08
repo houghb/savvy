@@ -34,7 +34,7 @@ from bokeh.models.tools import (BoxZoomTool, ResetTool,
 from ipywidgets import FloatSlider
 from IPython.html.widgets import interact
 
-output_notebook()
+
 sa_dict = dp.get_sa_data()
 
 
