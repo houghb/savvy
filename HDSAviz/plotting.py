@@ -75,7 +75,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
                     }
             p = Bar(data, values='Sensitivity', label=['Parameter'],
                     group='Order', legend='top_right',
-                    color=["#31a354", "#a1d99b"])
+                    color=["#31a354", "#a1d99b"], ylabel='Sensitivity Indices')
         else:
             data = {
                     'Sensitivity': pd.Series.append(df.S1, (df.ST-df.S1)),
@@ -87,7 +87,8 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
                     }
             p = Bar(data, values='Sensitivity', label=['Parameter'],
                     color=['Order'], legend='top_right',
-                    stack='Order', palette=["#31a354", "#a1d99b"])
+                    stack='Order', palette=["#31a354", "#a1d99b"],
+                    ylabel='Sensitivity Indices')
         return p
 
     # Create Dictionary of colors
