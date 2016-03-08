@@ -5,6 +5,13 @@ this package because graph-tools is an uncommon package that is slightly
 more involved to install than normal conda- or pip-accessible packages.  All
 the other visualization functionality of HDSAviz is accessible with the more
 readily available bokeh plots.
+
+The plots generated in this module offer a good visualization of which
+parameters have the highest sensitivities, and which are connected by
+second order interactions.  Relative sizes of vertices on these plots are not
+very good representations of the actual difference in magnitude between
+sensitivities (a value of 0.02 appears similar to a value of 0.2).  The bokeh
+visualizations offer better insight into these relative magnitudes.
 """
 
 from graph_tool.all import *
@@ -110,13 +117,15 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     # g.vp.param[g.vertex(77)]
     # g.vp.param[v_list[0]]
 
-    print ('Created graph with %s vertices and %s edges.' %
-           (g.num_vertices(), g.num_edges()))
+    print ('Created a graph with %s vertices and %s edges.\nVertices are the '
+           'top %s %s values greater than %s.\nOnly S2 values (edges) '
+           'greater than %s are included.' %
+           (g.num_vertices(), g.num_edges(), top, sens, min_sens, edge_cutoff))
 
     return g
 
 
-def plot_network_random(g, inline=True):
+def plot_network_random(g, inline=True, filename=None):
     """
     Display a plot of the network, g, with the vertices placed in an
     unstructured, apparently random layout.  Vertices are the model
@@ -125,10 +134,12 @@ def plot_network_random(g, inline=True):
 
     Parameters:
     -----------
-    g      : The graph to plot
-    inline : Boolean indicating whether the plot should be shown inline in
-             an ipython notebook.  If false the plot is created in its own
-             window and is somewhat interactive.
+    g        : The graph to plot
+    inline   : Boolean indicating whether the plot should be shown inline in
+               an ipython notebook.  If false the plot is created in its own
+               window and is somewhat interactive.
+    filename : If you would like to save the plot to a file specify a
+               filename (with an extension of pdf or png).
 
     Returns:
     --------
@@ -146,11 +157,13 @@ def plot_network_random(g, inline=True):
     #            edge_color='black',
                edge_pen_width=g.ep['second_sens'],
                output_size=(600, 600),
-               inline=inline)
+               inline=inline,
+               output=filename
+               )
 
 
 
-def plot_network_circle(g, inline=True):
+def plot_network_circle(g, inline=True, filename=None):
     """
     Display a plot of the network, g, with the vertices placed around the
     edge of a circle.  Vertices are the model parameters and they are
@@ -159,10 +172,12 @@ def plot_network_circle(g, inline=True):
 
     Parameters:
     -----------
-    g      : The graph to plot
-    inline : Boolean indicating whether the plot should be shown inline in
-             an ipython notebook.  If false the plot is created in its own
-             window and is somewhat interactive.
+    g        : The graph to plot
+    inline   : Boolean indicating whether the plot should be shown inline in
+               an ipython notebook.  If false the plot is created in its own
+               window and is somewhat interactive.
+    filename : If you would like to save the plot to a file specify a
+               filename (with an extension of pdf or png).
 
     Returns:
     --------
@@ -181,5 +196,6 @@ def plot_network_circle(g, inline=True):
     #                edge_color='black',
                    edge_pen_width=g.ep['second_sens'],
     #                subsample_edges=100,
-                   inline=inline
+                   inline=inline,
+                   output=filename
                    )
