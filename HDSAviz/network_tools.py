@@ -18,7 +18,7 @@ from graph_tool.all import *
 
 
 def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
-                   edge_cutoff=0.0):
+                edge_cutoff=0.0):
     """
     Initializes and constructs a graph where vertices are the parameters
     selected from the first dataframe in 'df_list', subject to the
@@ -98,7 +98,6 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
         df2.ix[df2['Parameter_1'] == param, 'vertex1'] = vertex
         df2.ix[df2['Parameter_2'] == param, 'vertex2'] = vertex
 
-
     # Only allow edges for vertices that we've defined
     df_edges = df2[(df2['vertex1'] != -999) & (df2['vertex2'] != -999)]
     # eliminate edges below a certain cutoff value
@@ -109,9 +108,8 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
         v1 = pruned.ix[i, 'vertex1']
         v2 = pruned.ix[i, 'vertex2']
         e = g.add_edge(v1, v2)
-        # multiply by 30 to make the lines visible on the plot
-        eprop_sens[e] = sensitivity * 90
-        #print g.vp.param[g.vertex(v1)], g.vp.param[g.vertex(v2)], sensitivity
+        # multiply by a number to make the lines visible on the plot
+        eprop_sens[e] = sensitivity * 150
 
     # These are ways you can reference properties of vertices or edges
     # g.vp.param[g.vertex(77)]
@@ -154,13 +152,12 @@ def plot_network_random(g, inline=True, filename=None):
                vertex_halo=True,
                vertex_halo_color='#b3c6ff',
                vertex_halo_size=g.vp['confidence'],
-    #            edge_color='black',
+               edge_color='#002699',
                edge_pen_width=g.ep['second_sens'],
                output_size=(600, 600),
                inline=inline,
                output=filename
                )
-
 
 
 def plot_network_circle(g, inline=True, filename=None):
@@ -193,9 +190,8 @@ def plot_network_circle(g, inline=True, filename=None):
                    vertex_halo=True,
                    vertex_halo_color='#b3c6ff',
                    vertex_halo_size=g.vp['confidence'],
-    #                edge_color='black',
                    edge_pen_width=g.ep['second_sens'],
-    #                subsample_edges=100,
+                   # subsample_edges=100,
                    inline=inline,
                    output=filename
                    )
