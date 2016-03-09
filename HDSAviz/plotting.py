@@ -382,6 +382,10 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
     --------
     p : A bokeh figure to be plotted
     """
+    # Make sure `top` != 0 (it must be at least 1, even if a list is
+    # specified for `include`.
+    if top == 0:
+        top = 1
 
     # Colormap to use for plot
     colors = ["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6",
@@ -448,7 +452,7 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
     source = ColumnDataSource(data=dict(xlabel=xlabel, ylabel=ylabel, s2=s2,
                               s2_conf=s2_conf, color=color))
 
-    plottools = "resize,hover,save,pan,box_zoom,wheel_zoom"
+    plottools = "resize, hover, save, pan, box_zoom, wheel_zoom, reset"
     p = figure(title="%s second order sensitivities" % name,
                x_range=list(reversed(labels)), y_range=labels,
                x_axis_location="above", plot_width=700, plot_height=700,
