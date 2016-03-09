@@ -186,7 +186,7 @@ def short_interactive_demo():
     top_box = BoundedFloatText(value=20, min=1, max=1000, step = 1, 
                                description='Show Top')
     stacks = Checkbox(description='Show Stacked Plots',
-                          value=False,)
+                          value=True,)
     error_bars = Checkbox(description='Show Error Bars', value=True)
     log_axis = Checkbox(description='Convert linear axis to log axis', value=True)
     highlighted_parameters = SelectMultiple(description="Choose parameters to be highligted", 
