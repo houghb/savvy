@@ -107,9 +107,9 @@ def make_plot(dataframe, highlight=[],
                     'Confidence': pd.Series.append(df.S1_conf,
                                                    df.ST_conf)
                     }
-            p = Bar(data, values=['Sensitivity'], label=['Parameter'],
-                    color=['Order'], legend='top_right',
-                    stack=['Order'], palette=["#31a354", "#a1d99b"],
+            p = Bar(data, values='Sensitivity', label='Parameter',
+                    color='Order', legend='top_right',
+                    stack='Order', palette=["#31a354", "#a1d99b"],
                     ylabel='Sensitivity Indices')
         return p
 
