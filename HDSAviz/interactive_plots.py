@@ -31,7 +31,8 @@ from bokeh.models.tools import (BoxZoomTool, ResetTool,
                                 WheelZoomTool)
 
 
-from ipywidgets import FloatSlider
+from ipywidgets import FloatSlider, BoundedFloatText, ToggleButton,Checkbox, SelectMultiple
+
 from IPython.html.widgets import interact
 
 
@@ -39,7 +40,8 @@ sa_dict = dp.get_sa_data()
 
 
 def plot_all_outcomes_burtin(
-        minimum_S1_limits_in_decimal_places):
+        minimum_S1_limits_in_decimal_places, top, stacked1, error_bars, log_axis, 
+                    highlighted_parameters):
     """
     This function plots the burtin type plots for all the outcome
     variables in different text files.
@@ -73,7 +75,8 @@ def plot_all_outcomes_burtin(
         # cleaning the file names to get a short name to occupy less
         # space in tabs.
     for i in range(len(sa_dict)):
-        p = make_plot(outcomes_array[i], 100, deci1, True, True)
+        p = make_plot(outcomes_array[i], top=top,  minvalues=deci1, stacked=stacked1, errorbar=error_bars,
+                  lgaxis=log_axis, highlight= highlighted_parameters)
         p.title = ('Single order and total order Sensitivity plots' +
                    'for S1: >= ' + str(deci1) + ' and ' + 'ST: >= ' +
                    str(deci1))
@@ -101,14 +104,25 @@ def Interact_with_burtin_plots():
     Interactive graph displaying a slider widgets that allow for
     minimum threshold of sensitivity selection
     """
-    output_notebook()
-    slider1 = FloatSlider(value=4, min=0, max=8,
-                          step=1, title='minimum_S1_limits_in_decimal_places')
+    decimal_box = BoundedFloatText(value=4, min=0, max=8, step=1,
+                                   title='minimum decimal places', 
+                                   description='minimum decimal places')
+    top_box = BoundedFloatText(value=20, min=1, max=1000, step = 1, 
+                               description='Show Top')
+    stacks = Checkbox(description='Show Stacked Plots',
+                          value=False,)
+    error_bars = Checkbox(description='Show Error Bars', value=True)
+    log_axis = Checkbox(description='Convert linear axis to log axis', value=True)
+    highlighted_parameters = SelectMultiple(description="Choose parameters to be highligted", 
+                                            options=list(sa_dict['CO'][0].Parameter.values))
     return interact(plot_all_outcomes_burtin,
-                    minimum_S1_limits_in_decimal_places=slider1)
+                    minimum_S1_limits_in_decimal_places=decimal_box,
+                   top=top_box, stacked1=stacks, error_bars=error_bars,
+                   log_axis=log_axis, highlighted_parameters=highlighted_parameters)
 
 
-def short_tabs_demo(minimum_S1_limits_in_decimal_places):
+def short_tabs_demo(minimum_S1_limits_in_decimal_places, top, stacked1, error_bars, log_axis, 
+                    highlighted_parameters):
     """
     This function plots the burtin type plots for two outcome
     variables in CO and CO2.
@@ -125,8 +139,8 @@ def short_tabs_demo(minimum_S1_limits_in_decimal_places):
 
     """
     deci1 = pow(10, -1*minimum_S1_limits_in_decimal_places)
-
-    p1 = make_plot(sa_dict['CO'][0], 100, deci1)
+    p1 = make_plot(sa_dict['CO'][0], top=top,  minvalues=deci1, stacked=stacked1, errorbar=error_bars,
+                  lgaxis=log_axis, highlight= highlighted_parameters)
     p1.title = ('Single order and total order Sensitivity plots' +
                 'showing parameters ' +
                 'for which S1: >= ' + str(deci1) + ' and ' +
@@ -134,7 +148,8 @@ def short_tabs_demo(minimum_S1_limits_in_decimal_places):
     p1.title_text_align = 'center'
     p1.title_text_font_size = '10pt'
 
-    p2 = make_plot(sa_dict['CO2'][0], 100, deci1)
+    p2 = make_plot(sa_dict['CO2'][0], minvalues=deci1, stacked=stacked1, errorbar=error_bars,
+                   lgaxis=log_axis, highlight=highlighted_parameters)
     p2.title = ('Single order and total order Sensitivity plots' +
                 'showing parameters ' +
                 'for which S1: >= ' + str(deci1) + ' and ' +
@@ -165,10 +180,21 @@ def short_interactive_demo():
     minimum threshold of sensitivity selection
     """
 
-    slider1 = FloatSlider(value=4, min=0, max=8, step=1,
-                          title='minimum_S1_limits_in_decimal_places')
+    decimal_box = BoundedFloatText(value=4, min=0, max=8, step=1,
+                                   title='minimum decimal places', 
+                                   description='minimum decimal places')
+    top_box = BoundedFloatText(value=20, min=1, max=1000, step = 1, 
+                               description='Show Top')
+    stacks = Checkbox(description='Show Stacked Plots',
+                          value=False,)
+    error_bars = Checkbox(description='Show Error Bars', value=True)
+    log_axis = Checkbox(description='Convert linear axis to log axis', value=True)
+    highlighted_parameters = SelectMultiple(description="Choose parameters to be highligted", 
+                                            options=list(sa_dict['CO'][0].Parameter.values))
     return interact(short_tabs_demo,
-                    minimum_S1_limits_in_decimal_places=slider1)
+                    minimum_S1_limits_in_decimal_places=decimal_box,
+                   top=top_box, stacked1=stacks, error_bars=error_bars,
+                   log_axis=log_axis, highlighted_parameters=highlighted_parameters)
 
 
 # for trial runs please uncomment the following when files are in
@@ -182,5 +208,6 @@ Small demo's with two outcomes(CO and CO2) plotted as tabs.
 """
 The interactive plots for all Outcomes with all outcomes as tab.
 """
+
 # plot_all_outcomes_burtin(4, 4)
 # Interact_with_burtin_plots()
