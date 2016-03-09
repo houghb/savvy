@@ -17,8 +17,8 @@ visualizations offer better insight into these relative magnitudes.
 try:
     from graph_tool.all import *
 except ImportError:
-    print 'graph-tool package is not installed!\n You will not be able to ' \
-          'use functions from `network_tools`
+    print ('graph-tool package is not installed!\n You will not be able to '
+           'use functions from `network_tools`)
 
 
 def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
