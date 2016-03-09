@@ -15,7 +15,8 @@ from bokeh.models import HoverTool
 from bokeh.charts import Bar
 
 
-def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
+def make_plot(dataframe, highlight=[],
+              top=100, minvalues=0.01, stacked=True, lgaxis=True,
               errorbar=True, showS1=True, showST=True):
     """Basic method to plot sensitivity anlaysis.
 
@@ -28,6 +29,9 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
     -----------
     dataframe : Dataframe containing sensitivity analysis results to be plotted
 
+    highlight: List of strings indicating which parameter wedges will be
+               highlighted
+
     top: Integer indicating the number of parameters to display (highest
                  sensitivity values)
 
@@ -37,6 +41,15 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
 
     lgaxis: Boolean indicating if log axis should be used (True) or if a
             linear axis should be used (False).
+
+    errorbar: Booelan indicating if error bars are shown (True) or are omitted
+              (False)
+
+    showS1: Boolean indicating whether 1st order sensitivity indices will be
+            plotted (True) or omitted (False)
+
+    showST: Boolean indicating whether total order sensitivity indices will be
+            plotted (True) or omitted (False)
 
     Returns:
     --------
@@ -63,6 +76,15 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
     firstorder = np.array(["1st (S1)"]*df.S1.size)
     totalorder = np.array(["Total (ST)"]*df.S1.size)
 
+    # Add column indicating which parameters should be highlighted
+    tohighlight = df.Parameter.isin(highlight)
+    df['highlighted'] = tohighlight
+
+    back_color = {
+                  True: "#aeaeb8",
+                  False: "#e6e6e6",
+                 }
+
     if len(df) <= 5:
         if stacked is False:
             data = {
@@ -73,8 +95,8 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
                     'Confidence': pd.Series.append(df.ST_conf,
                                                    df.S1_conf)
                     }
-            p = Bar(data, values='Sensitivity', label=['Parameter'],
-                    group='Order', legend='top_right',
+            p = Bar(data, values=['Sensitivity'], label=['Parameter'],
+                    group=['Order'], legend='top_right',
                     color=["#31a354", "#a1d99b"], ylabel='Sensitivity Indices')
         else:
             data = {
@@ -85,9 +107,9 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
                     'Confidence': pd.Series.append(df.S1_conf,
                                                    df.ST_conf)
                     }
-            p = Bar(data, values='Sensitivity', label=['Parameter'],
+            p = Bar(data, values=['Sensitivity'], label=['Parameter'],
                     color=['Order'], legend='top_right',
-                    stack='Order', palette=["#31a354", "#a1d99b"],
+                    stack=['Order'], palette=["#31a354", "#a1d99b"],
                     ylabel='Sensitivity Indices')
         return p
 
@@ -142,6 +164,7 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
     # circular axes and labels
     minlabel = min(round(np.log10(min(df.ST))), round(np.log10(min(df.S1))))
     labels = np.power(10.0, np.arange(0, minlabel-1, -1))
+
     # Set max radial line to correspond to 1.1 * maximum value + error
     maxvalST = max(df.ST+df.ST_conf)
     maxvalS1 = max(df.S1+df.S1_conf)
@@ -273,6 +296,11 @@ def make_plot(dataframe,  top=100, minvalues=0.01, stacked=True, lgaxis=True,
         pdata = pdata.tail(len(df))
     pdata_s = ColumnDataSource(pdata)
 
+    colors = [back_color[highl] for highl in df.highlighted]
+    p.annular_wedge(
+                    0, 0, inner_radius, outer_radius, -big_angle+angles,
+                    angles, color=colors,
+                    )
     # Specify that the plotted bars are the only thing to activate hovertool
     hoverable = p.annular_wedge(x='x', y='y', inner_radius='ymin',
                                 outer_radius='ymax',
