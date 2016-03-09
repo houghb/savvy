@@ -182,11 +182,6 @@ def make_plot(dataframe, highlight=[],
         labels = np.delete(labels, -2)
         radii = (outer_radius - inner_radius)*labels/labels[0] + inner_radius
 
-    # Adding axis lines and labels
-    p.circle(0, 0, radius=radii, fill_color=None, line_color="white")
-    p.text(0, radii[:], [str(r) for r in labels[:]],
-           text_font_size="8pt", text_align="center", text_baseline="middle")
-
     # Convert sensitivity values to the plotted values
     # Same conversion as for the labels above
     # Also calculate the angle to which the bars are placed
@@ -301,6 +296,11 @@ def make_plot(dataframe, highlight=[],
                     0, 0, inner_radius, outer_radius, -big_angle+angles,
                     angles, color=colors,
                     )
+    # Adding axis lines and labels
+    p.circle(0, 0, radius=radii, fill_color=None, line_color="white")
+    p.text(0, radii[:], [str(r) for r in labels[:]],
+           text_font_size="8pt", text_align="center", text_baseline="middle")
+
     # Specify that the plotted bars are the only thing to activate hovertool
     hoverable = p.annular_wedge(x='x', y='y', inner_radius='ymin',
                                 outer_radius='ymax',
@@ -314,9 +314,7 @@ def make_plot(dataframe, highlight=[],
     # dictdata = df.set_index('Parameter').to_dict()
 
     # plot lines to separate parameters
-    p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
-                    -big_angle+line_angles, -big_angle+line_angles,
-                    color="#999999")
+
     # Add error bars
     if errorbar is True:
         p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
@@ -351,6 +349,9 @@ def make_plot(dataframe, highlight=[],
            color=list(error_color.values()))
     p.text([-15, -15, -15, -15], [30, 10, -10, -30], text=legend_text,
            text_font_size="9pt", text_align="left", text_baseline="middle")
+    p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
+                    -big_angle+line_angles, -big_angle+line_angles,
+                    color="#999999")
 
     return p
 
