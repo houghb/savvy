@@ -59,7 +59,6 @@ def make_plot(dataframe, highlight=[],
 
     # Remove rows which have values less than cutoff values
     df = df[df['ST'] > minvalues]
-    df = df[df['S1'] > minvalues]
     df = df.dropna()
 
     # Only keep top values indicated by variable top
@@ -406,7 +405,7 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
     ylabels = labels
 
     # Use this to scale the heatmap so the max sensitivity index is darkest
-    maxval = round(np.max(df.S2), 2)
+    maxval = np.max(df.S2)
 
     xlabel = []
     ylabel = []
