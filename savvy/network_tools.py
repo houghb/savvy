@@ -3,7 +3,7 @@ This module contains functions to create and display network graphs of the
 sensitivity analysis results.  It is included as an independent module in
 this package because graph-tools is an uncommon package that is slightly
 more involved to install than normal conda- or pip-accessible packages.  All
-the other visualization functionality of HDSAviz is accessible with the more
+the other visualization functionality of savvy is accessible with the more
 readily available bokeh plots.
 
 The plots generated in this module offer a good visualization of which

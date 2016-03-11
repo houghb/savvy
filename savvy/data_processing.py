@@ -6,7 +6,7 @@ as any SALib analysis results will be.
 
 Our data files are stored outside this repository because they are too large,
 so it may be necessary for future users to update the relative paths below
-(our data directory is located at ../../HDSAviz_data/
+(our data directory is located at ../../savvy_data/
 """
 import os
 
@@ -47,7 +47,7 @@ def read_file(path, numrows=None, drop=False, sep=','):
     return df
 
 
-def get_params(path='../../HDSAviz_data/input_parameters.csv',
+def get_params(path='../../savvy_data/input_parameters.csv',
                numrows=None, drop=['End_time', 'Oxygen']):
     """
     NOTE: This function is specific to our lignin modeling dataset
@@ -75,7 +75,7 @@ def get_params(path='../../HDSAviz_data/input_parameters.csv',
     return read_file(path, numrows=numrows, drop=drop)
 
 
-def get_results(path='../../HDSAviz_data/results.csv',
+def get_results(path='../../savvy_data/results.csv',
                 numrows=None, drop=['light_aromatic_C-C',
                                     'light_aromatic_methoxyl']):
     """
@@ -97,7 +97,7 @@ def get_results(path='../../HDSAviz_data/results.csv',
     return read_file(path, numrows=numrows, drop=drop)
 
 
-def get_sa_data(path='../../HDSAviz_data/'):
+def get_sa_data(path='../../savvy_data/'):
     """
     This function reads and processes all the sensitivity analysis results
     in a specified folder and returns a dictionary with the corresponding
@@ -234,7 +234,7 @@ def combine_sens(order):
 #     STdata['Output_Measure'] = row_names
 
 
-def find_unimportant_params(header='ST', path='../../HDSAviz_data/'):
+def find_unimportant_params(header='ST', path='../../savvy_data/'):
     """
     This function finds which parameters have sensitivities and confidence
     intervals equal to exactly 0.0, which means those parameters have no
