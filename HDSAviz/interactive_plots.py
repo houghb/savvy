@@ -1,6 +1,6 @@
 """
-This library adds the interactive features to basic plots
-for the sensitivity analysis
+This modules adds interactivity to plots in plotting.py through Bokeh tabs and
+ipython widgets.
 
 Dependencies:
 plotting.py
@@ -35,9 +35,6 @@ from ipywidgets import (BoundedFloatText, FloatText, Checkbox,
                         SelectMultiple)
 
 from IPython.html.widgets import interact, fixed
-
-
-# sa_dict = dp.get_sa_data()
 
 
 def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
