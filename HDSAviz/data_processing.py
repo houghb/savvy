@@ -211,6 +211,9 @@ def combine_sens(order):
     indices and confidence values of a specified order (first, total) from
     every output measure.
 
+    The output of this function can be used to plot the sensitivity indices
+    of all of the output measures for a given parameter.
+
     Parameters:
     -----------
     order : String indicating which order indices to combine (first, total)
@@ -231,16 +234,41 @@ def combine_sens(order):
 #     STdata['Output_Measure'] = row_names
 
 
-def id_unnecessary():
+def find_unimportant_params(header='ST', path='../../HDSAviz_data/'):
     """
-    STILL WORKING ON WRITING THIS FUNCTION
+    This function finds which parameters have sensitivities and confidence
+    intervals equal to exactly 0.0, which means those parameters have no
+    role in influencing the output variance for any of the calculated output
+    measures.
 
-    Identify candidate reactions which may not be necessary at all
-    in the kinetic scheme.  Such reactions have no influence on the
-    output measures of interest, so we suspect they may be acceptible
-    to prune from the kinetic scheme.
+    These parameters could be considered for removal from the model
+    (although it is possible they might play a role in other, unsaved
+    outputs)
+
+    Parameters:
+    -----------
+    header : string of the column header for the sensitivity index you choose
+    path   : string with the path to the folder where your analysis files
+             are located.
+
+    Returns:
+    --------
+    unimportant : a list of the parameters that don't matter for these outputs
     """
-#     for col in STdata.columns:
-#         if col != 'Output_Measure':
-#             if STdata[col].max() == 0.0:
-#                 print col
+    zero_params = []
+    sa_dict = get_sa_data(path)
+    for key in sa_dict.keys():
+        df = sa_dict[key][0]
+        zero_params.append(df[(df[header] == 0.0) &
+                              (df['%s_conf'%header] == 0.0)]
+                           .ix[:, 'Parameter'].values.tolist())
+
+    result = set(zero_params[0])
+    for s in zero_params[1:]:
+        result.intersection_update(s)
+    unimportant = list(result)
+    unimportant.sort()
+
+    print 'The following %s parameters have %s==0 for all outputs:\n' % \
+          (len(unimportant), header), unimportant, '\n'
+    return unimportant
