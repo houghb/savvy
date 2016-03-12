@@ -33,11 +33,13 @@ def make_plot(dataframe, highlight=[],
                highlighted
 
     top: Integer indicating the number of parameters to display (highest
-                 sensitivity values)
+                 sensitivity values) (after minimum cutoff is applied)
 
-    minvalues: Cutoff minimum for which parameters should be plotted (float)
+    minvalues: Cutoff minimum for which parameters should be plotted (float).
+               Applies to total order only.
 
-    stacked: Boolean indicating in bars should be stacked for each parameter.
+    stacked: Boolean indicating in bars should be stacked for each parameter
+             (True) or unstacked (False).
 
     lgaxis: Boolean indicating if log axis should be used (True) or if a
             linear axis should be used (False).
@@ -49,13 +51,46 @@ def make_plot(dataframe, highlight=[],
             plotted (True) or omitted (False)
 
     showST: Boolean indicating whether total order sensitivity indices will be
-            plotted (True) or omitted (False)
+            plotted (True) or omitted (False).
+
+            **Note if showS1 and showST are both false, the plot will default
+              to showing ST data only instead of a blank plot**
 
     Returns:
     --------
     p: Figure of the data to be plotted
+
+    correct_dataframe: Boolean checking if dataframe has correct headers
+
+    radial_plot: Boolean checking if radial plot is generated (True) or
+                 bar chart (False)
+
+    error_bars_present: Boolean checking if error bars are generated (True)
+                        or omitted (False)
+    S1_plotted: Boolean checking if S1 data is correctly included (True) or
+                omitted (False)
+
+    ST_plotted: Boolean checking if S1 data is correctly included (True) or
+                omitted (False)
+
+    check_axis: Boolean checking if all data fits on plot range (True) or not
+                (False)
+
+    check_min_value: Boolean checking that data points are greater than cutoff
+                     (True) or not (False)
     """
+
     df = dataframe
+
+    # Initialize boolean checks and check dataframe structure
+    if (('S1' in df) and ('ST' in df) and ('Parameter' in df) and
+       ('ST_conf' in df) and ('S1_conf' in df)):
+        correct_dataframe = True
+        error_bars_present = False
+    else:
+        correct_dataframe = False
+        "Dataframe is not formatted correctly"
+        return correct_dataframe
 
     # Remove rows which have values less than cutoff values
     df = df[df['ST'] > minvalues]
@@ -110,7 +145,12 @@ def make_plot(dataframe, highlight=[],
                     color='Order', legend='top_right',
                     stack='Order', palette=["#31a354", "#a1d99b"],
                     ylabel='Sensitivity Indices')
-        return p
+        radial_plot = False
+        if min(df.ST) < minvalues:
+            check_min_value = False
+        else:
+            check_min_value = True
+        return (p, correct_dataframe, radial_plot, check_min_value)
 
     # Create Dictionary of colors
     stat_color = OrderedDict()
@@ -290,6 +330,32 @@ def make_plot(dataframe, highlight=[],
         pdata = pdata.tail(len(df))
     pdata_s = ColumnDataSource(pdata)
 
+    check_data = pdata_s.to_df()
+
+    check_mv_data = check_data[check_data['Sens'] < minvalues]
+    if len(check_mv_data[check_mv_data['Order'] == 'Total (ST)']) > 0:
+        check_min_value = False
+    else:
+        check_min_value = True
+
+    check_bottom_data = check_data[check_data['ymax'] < 90]
+    check_top_data = check_data[check_data['ymax'] > 300]
+
+    if len(check_bottom_data) > 0 or len(check_top_data) > 0:
+        check_axis = False
+    else:
+        check_axis = True
+
+    if len(check_data[check_data['Order'] == 'Total (ST)']) > 0:
+        ST_plotted = True
+    else:
+        ST_plotted = False
+
+    if len(check_data[check_data['Order'] == '1st (S1)']) > 0:
+        S1_plotted = True
+    else:
+        S1_plotted = False
+
     colors = [back_color[highl] for highl in df.highlighted]
     p.annular_wedge(
                     0, 0, inner_radius, outer_radius, -big_angle+angles,
@@ -330,6 +396,7 @@ def make_plot(dataframe, highlight=[],
                         pdata['starts'],
                         pdata['stops'],
                         color=pdata['Error Colors'], line_width=2.0)
+        error_bars_present = True
     # Placement of parameter labels
     xr = (radii[0]*1.1)*np.cos(np.array(-big_angle/2 + angles))
     yr = (radii[0]*1.1)*np.sin(np.array(-big_angle/2 + angles))
@@ -351,8 +418,10 @@ def make_plot(dataframe, highlight=[],
     p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
                     -big_angle+line_angles, -big_angle+line_angles,
                     color="#999999")
+    radial_plot = True
 
-    return p
+    return (p, correct_dataframe, radial_plot, check_min_value, S1_plotted,
+            ST_plotted, check_axis, error_bars_present)
 
 
 def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):

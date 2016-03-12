@@ -85,7 +85,7 @@ def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
                       errorbar=error_bars,
                       lgaxis=log_axis,
                       highlight=highlighted_parameters
-                      )
+                      )[0]
         tabs_dictionary[i] = Panel(child=p, title=sa_dict.keys()[i])
 
     tabs = Tabs(tabs=tabs_dictionary.values())
