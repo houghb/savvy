@@ -54,6 +54,7 @@ Python version 2.7  ([https://www.python.org/](https://www.python.org/))
 - SALib
 - matplotlib
 - graph-tool
+- ipywidgets
 
 __coming soon__  - versions of the packages used.
 
