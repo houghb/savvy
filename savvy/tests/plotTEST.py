@@ -72,5 +72,4 @@ class TestPlots(unittest.TestCase):
                            errorbar=True, showS1=True, showST=True)
         self.assertEqual(len(result.properties_with_values()['tools']), 7)
 
-if __name__ == '__main__':
-    unittest.main()
+unittest.main()
