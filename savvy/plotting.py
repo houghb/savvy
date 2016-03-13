@@ -15,7 +15,7 @@ from bokeh.models import HoverTool
 from bokeh.charts import Bar
 
 
-def make_plot(dataframe, highlight=[],
+def make_plot(dataframe=pd.DataFrame(), highlight=[],
               top=100, minvalues=0.01, stacked=True, lgaxis=True,
               errorbar=True, showS1=True, showST=True):
     """Basic method to plot sensitivity anlaysis.
@@ -60,37 +60,14 @@ def make_plot(dataframe, highlight=[],
     --------
     p: Figure of the data to be plotted
 
-    correct_dataframe: Boolean checking if dataframe has correct headers
-
-    radial_plot: Boolean checking if radial plot is generated (True) or
-                 bar chart (False)
-
-    error_bars_present: Boolean checking if error bars are generated (True)
-                        or omitted (False)
-    S1_plotted: Boolean checking if S1 data is correctly included (True) or
-                omitted (False)
-
-    ST_plotted: Boolean checking if S1 data is correctly included (True) or
-                omitted (False)
-
-    check_axis: Boolean checking if all data fits on plot range (True) or not
-                (False)
-
-    check_min_value: Boolean checking that data points are greater than cutoff
-                     (True) or not (False)
     """
 
     df = dataframe
 
     # Initialize boolean checks and check dataframe structure
-    if (('S1' in df) and ('ST' in df) and ('Parameter' in df) and
-       ('ST_conf' in df) and ('S1_conf' in df)):
-        correct_dataframe = True
-        error_bars_present = False
-    else:
-        correct_dataframe = False
-        "Dataframe is not formatted correctly"
-        return correct_dataframe
+    if (('S1' not in df) or ('ST' not in df) or ('Parameter' not in df) or
+       ('ST_conf' not in df) or ('S1_conf' not in df)):
+        raise Exception('Dataframe not formatted correctly')
 
     # Remove rows which have values less than cutoff values
     df = df[df['ST'] > minvalues]
@@ -145,12 +122,8 @@ def make_plot(dataframe, highlight=[],
                     color='Order', legend='top_right',
                     stack='Order', palette=["#31a354", "#a1d99b"],
                     ylabel='Sensitivity Indices')
-        radial_plot = False
-        if min(df.ST) < minvalues:
-            check_min_value = False
-        else:
-            check_min_value = True
-        return (p, correct_dataframe, radial_plot, check_min_value)
+
+        return p
 
     # Create Dictionary of colors
     stat_color = OrderedDict()
@@ -330,32 +303,6 @@ def make_plot(dataframe, highlight=[],
         pdata = pdata.tail(len(df))
     pdata_s = ColumnDataSource(pdata)
 
-    check_data = pdata_s.to_df()
-
-    check_mv_data = check_data[check_data['Sens'] < minvalues]
-    if len(check_mv_data[check_mv_data['Order'] == 'Total (ST)']) > 0:
-        check_min_value = False
-    else:
-        check_min_value = True
-
-    check_bottom_data = check_data[check_data['ymax'] < 90]
-    check_top_data = check_data[check_data['ymax'] > 300]
-
-    if len(check_bottom_data) > 0 or len(check_top_data) > 0:
-        check_axis = False
-    else:
-        check_axis = True
-
-    if len(check_data[check_data['Order'] == 'Total (ST)']) > 0:
-        ST_plotted = True
-    else:
-        ST_plotted = False
-
-    if len(check_data[check_data['Order'] == '1st (S1)']) > 0:
-        S1_plotted = True
-    else:
-        S1_plotted = False
-
     colors = [back_color[highl] for highl in df.highlighted]
     p.annular_wedge(
                     0, 0, inner_radius, outer_radius, -big_angle+angles,
@@ -376,10 +323,6 @@ def make_plot(dataframe, highlight=[],
                                 )
     hover.renderers = [hoverable]
 
-    # dictdata = df.set_index('Parameter').to_dict()
-
-    # plot lines to separate parameters
-
     # Add error bars
     if errorbar is True:
         p.annular_wedge(0, 0, pdata['Lower'], pdata['Upper'],
@@ -396,7 +339,6 @@ def make_plot(dataframe, highlight=[],
                         pdata['starts'],
                         pdata['stops'],
                         color=pdata['Error Colors'], line_width=2.0)
-        error_bars_present = True
     # Placement of parameter labels
     xr = (radii[0]*1.1)*np.cos(np.array(-big_angle/2 + angles))
     yr = (radii[0]*1.1)*np.sin(np.array(-big_angle/2 + angles))
@@ -418,10 +360,8 @@ def make_plot(dataframe, highlight=[],
     p.annular_wedge(0, 0, inner_radius-10, outer_radius+10,
                     -big_angle+line_angles, -big_angle+line_angles,
                     color="#999999")
-    radial_plot = True
 
-    return (p, correct_dataframe, radial_plot, check_min_value, S1_plotted,
-            ST_plotted, check_axis, error_bars_present)
+    return p
 
 
 def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
