@@ -1,40 +1,13 @@
 """
 This modules adds interactivity to plots in plotting.py through Bokeh tabs and
 ipython widgets.
-
-Dependencies:
-plotting.py
-data_processing.py
-matplotlib
-numpy
-pandas
-os
-bokeh
 """
-
-import data_processing as dp
-from plotting import make_plot, make_second_order_heatmap
-
-import os
-from collections import OrderedDict
-import numpy as np
-import pandas as pd
-import matplotlib
-
 from bokeh.models.widgets import Panel, Tabs
-from bokeh.io import save, vform
-from bokeh.plotting import figure, show, output_notebook, output_file
-from bokeh.models.tools import (BoxZoomTool, ResetTool,
-                                PreviewSaveTool,
-                                ResizeTool,
-                                PanTool, PolySelectTool,
-                                WheelZoomTool)
-
-
-from ipywidgets import (BoundedFloatText, FloatText, Checkbox,
-                        SelectMultiple)
-
+from bokeh.plotting import show
+from ipywidgets import BoundedFloatText, FloatText, Checkbox, SelectMultiple
 from IPython.html.widgets import interact, fixed
+
+from plotting import make_plot, make_second_order_heatmap
 
 
 def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
@@ -43,7 +16,7 @@ def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
     """
     This function calls plotting.make_plot() for all the sensitivity
     analysis output files and lets you choose which output to view
-    using tabs
+    using tabs.
 
     Parameters:
     -----------
@@ -64,7 +37,7 @@ def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
 
     Returns:
     --------
-    p :  a bokeh plot generated with plotting.make_plot() that includes tabs
+    p :  a Bokeh plot generated with plotting.make_plot() that includes tabs
          for all the possible outputs.
     """
 
@@ -145,8 +118,9 @@ def plot_all_second_order(sa_dict, top=5, mirror=True, include=[]):
 
     Returns:
     --------
-    p :  a bokeh plot that includes tabs for all the possible outputs.
+    p :  a Bokeh plot that includes tabs for all the possible outputs.
     """
+
     tabs_dictionary = {}
     outcomes_array = []
 
@@ -156,7 +130,7 @@ def plot_all_second_order(sa_dict, top=5, mirror=True, include=[]):
     for i in range(len(sa_dict)):
         p = make_second_order_heatmap(outcomes_array[i],
                                       top=top,
-                                      mirror=True,
+                                      mirror=mirror,
                                       include=include
                                       )
         tabs_dictionary[i] = Panel(child=p, title=sa_dict.keys()[i])

@@ -9,17 +9,18 @@ except:
 
 from ..data_processing import get_sa_data, find_unimportant_params
 
-sample_files_path = os.getcwd().split('savvy')[0] + 'savvy/sample_data_files/'
-comparisons = pickle.load(open(sample_files_path+'unittest_comparisons.pkl',
+# Load a sample file to use for testing
+path = os.getcwd().split('savvy')[0] + 'savvy/sample_data_files/'
+comps = pickle.load(open(path+'unittest_comparisons.pkl',
                                'rb'))
 
 
 class TestGetSAData(unittest.TestCase):
     """Tests for get_sa_data()"""
 
-    def test_returns_expected_dict(self, comps=comparisons,
-                                   path=sample_files_path):
-        """Does get_sa_data() return the expected dictionaries?"""
+    def test_returns_expected_dict(self):
+        """Does get_sa_data() return the expected dictionaries (tests
+        multiple)?"""
         # compare two dataframes with all sensitivity results
         df1 = comps[0]['sample-output1'][0]
         df2 = get_sa_data(path)['sample-output1'][0]
@@ -44,16 +45,14 @@ class TestFindUnimportantParams(unittest.TestCase):
 
     def test_header_error_raised(self):
         """Is an error raised if an inappropriate header is passed?"""
-        self.assertRaises(ValueError, find_unimportant_params, 'St',
-                          sample_files_path)
-        self.assertRaises(ValueError, find_unimportant_params, 8,
-                          sample_files_path)
+        self.assertRaises(ValueError, find_unimportant_params, 'St', path)
+        self.assertRaises(ValueError, find_unimportant_params, 8, path)
 
     def test_returns_expected_output(self):
         """Does the function return the expected unimportant parameters?"""
         expected_results = ['k182', 'k202', 'k221', 'k241', 'k315', 'k335',
                             'k344', 'k384', 'k395']
-        self.assertEquals(find_unimportant_params('S1', sample_files_path),
+        self.assertEquals(find_unimportant_params('S1', path),
                           expected_results)
 
 

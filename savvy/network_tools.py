@@ -15,7 +15,7 @@ visualizations offer better insight into these relative magnitudes.
 """
 
 try:
-    from graph_tool.all import *
+    from graph_tool import Graph, draw, community
 except ImportError:
     print ('graph-tool package is not installed!\n You will not be able to '
            'use functions from `network_tools`')
@@ -52,6 +52,7 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
         'second_sens', the second order sensitivity index for the
         interaction between the two vertices it connects.
     """
+
     # get the first/total index dataframe and second order dataframe
     df = df_list[0]
     df2 = df_list[1]
@@ -150,21 +151,22 @@ def plot_network_random(g, inline=True, filename=None):
     --------
     Makes a plot
     """
-    graph_draw(g,
-               vertex_text=g.vp['param'],
-               vertex_font_size=8,
-               vertex_size=g.vp['sensitivity'],
-               vertex_color='#006600',
-               vertex_fill_color='#006600',
-               vertex_halo=True,
-               vertex_halo_color='#b3c6ff',
-               vertex_halo_size=g.vp['confidence'],
-               edge_color='#002699',
-               edge_pen_width=g.ep['second_sens'],
-               output_size=(600, 600),
-               inline=inline,
-               output=filename
-               )
+
+    draw.graph_draw(g,
+                    vertex_text=g.vp['param'],
+                    vertex_font_size=8,
+                    vertex_size=g.vp['sensitivity'],
+                    vertex_color='#006600',
+                    vertex_fill_color='#006600',
+                    vertex_halo=True,
+                    vertex_halo_color='#b3c6ff',
+                    vertex_halo_size=g.vp['confidence'],
+                    edge_color='#002699',
+                    edge_pen_width=g.ep['second_sens'],
+                    output_size=(600, 600),
+                    inline=inline,
+                    output=filename
+                    )
 
 
 def plot_network_circle(g, inline=True, filename=None):
@@ -187,18 +189,19 @@ def plot_network_circle(g, inline=True, filename=None):
     --------
     Makes a plot
     """
-    state = minimize_nested_blockmodel_dl(g, deg_corr=True)
-    draw_hierarchy(state,
-                   vertex_text=g.vp['param'],
-                   vertex_font_size=8,
-                   vertex_size=g.vp['sensitivity'],
-                   vertex_color='#006600',
-                   vertex_fill_color='#006600',
-                   vertex_halo=True,
-                   vertex_halo_color='#b3c6ff',
-                   vertex_halo_size=g.vp['confidence'],
-                   edge_pen_width=g.ep['second_sens'],
-                   # subsample_edges=100,
-                   inline=inline,
-                   output=filename
-                   )
+
+    state = community.minimize_nested_blockmodel_dl(g, deg_corr=True)
+    draw.draw_hierarchy(state,
+                        vertex_text=g.vp['param'],
+                        vertex_font_size=8,
+                        vertex_size=g.vp['sensitivity'],
+                        vertex_color='#006600',
+                        vertex_fill_color='#006600',
+                        vertex_halo=True,
+                        vertex_halo_color='#b3c6ff',
+                        vertex_halo_size=g.vp['confidence'],
+                        edge_pen_width=g.ep['second_sens'],
+                        # subsample_edges=100,
+                        inline=inline,
+                        output=filename
+                        )

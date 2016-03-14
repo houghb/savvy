@@ -40,6 +40,7 @@ def read_file(path, numrows=None, drop=False, sep=','):
          limited to the number of rows specified and without the
          columns named in "drop".
     """
+
     df = pd.read_csv(path, sep=sep, nrows=numrows)
     if not drop:
         df.drop(drop, axis=1, inplace=True)
@@ -73,6 +74,7 @@ def get_params(path='../../savvy_data/input_parameters.csv',
     A pandas dataframe
 
     """
+
     return read_file(path, numrows=numrows, drop=drop)
 
 
@@ -96,6 +98,7 @@ def get_results(path='../../savvy_data/results.csv',
               the returned dataframe.  If you want all outputs use
               drop=False.
     """
+
     return read_file(path, numrows=numrows, drop=drop)
 
 
@@ -142,13 +145,14 @@ def get_sa_data(path='../../savvy_data/'):
                results in the analysis file then this value is a boolean,
                False.
     """
+
     filenames = [filename for filename in os.listdir(
-                path) if filename.startswith('analysis')]
+                 path) if filename.startswith('analysis')]
 
     # These two functional groups are not present in the light oil fraction
     if 'analysis_light_aromatic-C-C.txt' in filenames:
         filenames.remove('analysis_light_aromatic-C-C.txt')
-    if 'analysis_light_aromatic-methoxyl.txt' in filenames:    
+    if 'analysis_light_aromatic-methoxyl.txt' in filenames:
         filenames.remove('analysis_light_aromatic-methoxyl.txt')
 
     # Make a dictionary where keys are the different output measures
@@ -190,18 +194,18 @@ def get_sa_data(path='../../savvy_data/'):
         # .
         # adjust confidence interval to account for shifting sensitivity value
         sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1_conf'] = (
-            sens_dfs[name][0]['S1_conf'] + sens_dfs[name][0]['S1'] - 0.00001)
-        # set the new sensitivity value = 0.00001
-        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1'] = 0.00001
+            sens_dfs[name][0]['S1_conf'] + sens_dfs[name][0]['S1'] - 0.0001)
+        # set the new sensitivity value = 0.0001
+        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1'] = 0.0001
         # do the same for total and second order indices
         sens_dfs[name][0].ix[sens_dfs[name][0]['ST'] < 0, 'ST_conf'] = (
-            sens_dfs[name][0]['ST_conf'] + sens_dfs[name][0]['ST'] - 0.00001)
-        sens_dfs[name][0].ix[sens_dfs[name][0]['ST'] < 0, 'ST'] = 0.00001
+            sens_dfs[name][0]['ST_conf'] + sens_dfs[name][0]['ST'] - 0.0001)
+        sens_dfs[name][0].ix[sens_dfs[name][0]['ST'] < 0, 'ST'] = 0.0001
         if isinstance(sens_dfs[name][1], pd.DataFrame):
             sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2_conf'] = (
                 sens_dfs[name][1]['S2_conf'] + sens_dfs[name][1]['S2'] -
-                0.00001)
-            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2'] = 0.00001
+                0.0001)
+            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2'] = 0.0001
 
         # Change 'rxn' to 'k' for consistency with inputs file
         sens_dfs[name][0].Parameter = (sens_dfs[name][0].Parameter
@@ -231,6 +235,7 @@ def find_unimportant_params(header='ST', path='../../savvy_data/'):
     --------
     unimportant : a list of the parameters that don't matter for these outputs
     """
+
     if header not in set(['ST', 'S1']):
         raise ValueError('header must be ST or S1')
 
