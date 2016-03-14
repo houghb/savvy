@@ -88,7 +88,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
                   True: "#aeaeb8",
                   False: "#e6e6e6",
                  }
-
+    # Switch to bar chart if dataframe shrinks below 5 parameters
     if len(df) <= 5:
         if stacked is False:
             data = {
@@ -126,6 +126,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
     # Reset index of dataframe.
     for i in range(2, 4):
         error_color[i] = colors[i]
+
     # Sizing parameters
     width = 800
     height = 800
@@ -140,7 +141,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
         small_angle = big_angle / 5
     else:
         small_angle = big_angle / 3
-
+    # tools enabled for bokeh figure
     plottools = "hover, wheel_zoom, save, reset, resize"  # , tap"
     # Initialize figure with tools, coloring, etc.
     p = figure(plot_width=width, plot_height=height, title="",
@@ -290,10 +291,12 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
                                                        df.S1_err_angle,
                                                        ).reset_index(drop=True)
                          })
+    # removed S1 or ST values if indicated by input
     if showS1 is False:
         pdata = pdata.head(len(df))
     if showST is False:
         pdata = pdata.tail(len(df))
+    # convert dataframe to ColumnDataSource for glyphs
     pdata_s = ColumnDataSource(pdata)
 
     colors = [back_color[highl] for highl in df.highlighted]
