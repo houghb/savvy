@@ -11,8 +11,9 @@ from subprocess import call
 try:
     from SALib.sample import saltelli
 except ImportError:
-    print ('SALib is not installed - please install it to use this'
-           'module.  Other modules in savvy are independent of SALib.')
+    print ('SALib is not installed - please install it to use '
+           'sensitivity_tools.\nOther modules in savvy are independent of '
+           'SALib.')
 
 
 def gen_params(num_vars, names, bounds, n, save_loc, second_ord=True):
