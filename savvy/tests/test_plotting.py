@@ -15,6 +15,7 @@ from ..plotting import make_plot
 sample_files_path = os.getcwd().split('savvy')[0] + 'savvy/sample_data_files/'
 comparisons = pickle.load(open(sample_files_path+'unittest_comparisons.pkl',
                                'rb'))
+# Dataframe of sample data
 df = comparisons[0]['sample-output1'][0]
 
 
