@@ -18,7 +18,7 @@ class TestBuildGraph(unittest.TestCase):
     """Tests for build_graph() function"""
 
     def test_for_acceptable_sens_arg(self, comps=comparisons):
-        """Is an exception raised if sens is an inappropriate value'?"""
+        """Is an exception raised if sens is an inappropriate value?"""
         df_list = comps[0]['sample-output1']
         self.assertRaises(ValueError, build_graph, df_list, 'tot', 10,
                           0.01, 0.0)
@@ -31,15 +31,21 @@ class TestBuildGraph(unittest.TestCase):
         self.assertRaises(Exception, build_graph, df_list, 'ST', 10,
                           0.01, 0.0)
 
-    def test_for_correct_features(self, comps=comparisons):
+    def test_for_correct_num_vertices(self, comps=comparisons):
         """Does the graph object produced by build_graph have the correct
-        number of vertices and edges?"""
+        number of vertices?"""
         df_list = comps[0]['sample-output2']
         g = build_graph(df_list, 'ST', 30, 0.01, 0.0)
         expected_vertices = 27
-        expected_edges = 351
         self.assertEqual(expected_vertices, g.num_vertices(),
                          msg='num_vertices does not match expected')
+
+    def test_for_correct_num_edges(self, comps=comparisons):
+        """Does the graph object produced by build_graph have the correct
+        number of edges?"""
+        df_list = comps[0]['sample-output2']
+        g = build_graph(df_list, 'ST', 30, 0.01, 0.0)
+        expected_edges = 351
         self.assertEqual(expected_edges, g.num_edges(),
                          msg='num_edges does not match expected')
 
