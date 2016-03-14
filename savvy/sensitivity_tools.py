@@ -1,9 +1,18 @@
 """ Functions for setting up and carrying out a Sobol sensitivity analysis
-on your model."""
+on your model.
+
+This module requires the package SALib.  If you don't have SALib you can
+use the other functionality in savvy but will not be able to perform new
+sensitivity analyses.
+"""
 
 from subprocess import call
 
-from SALib.sample import saltelli
+try:
+    from SALib.sample import saltelli
+except ImportError:
+    print ('SALib is not installed - please install it to use this'
+           'module.  Other modules in savvy are independent of SALib.')
 
 
 def gen_params(num_vars, names, bounds, n, save_loc, second_ord=True):
