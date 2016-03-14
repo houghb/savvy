@@ -6,7 +6,7 @@ from subprocess import call
 from SALib.sample import saltelli
 
 
-def gen_params(num_vars, names, bounds, n, second=True):
+def gen_params(num_vars, names, bounds, n, save_loc, second_ord=True):
     """
     Generate the parameter sets for the Sobol sensitivity analysis.
     Saves a file with the information required for the analysis
@@ -14,19 +14,22 @@ def gen_params(num_vars, names, bounds, n, second=True):
 
     Parameters:
     -----------
-    num_vars : an integer number of parameters you will vary
-    names    : a list of strings with the names of the paramters
-    bounds   : a list of lists, where each inner list contains the
-               upper and lower bounds for a given parameter.
-    n        : an integer number of initial samples to generate from
-               the pseudo-random Sobol sequence. n parameter sets
-               will be generated using the Sobol sequence, then the
-               Saltelli cross-sampling method will be applied to give a
-               total of 2n(p+1) parameter sets to be run if second = True.
-    second   : a boolean to indicate whether or not to calculate second
-               order sensitivity indices.  If False, only 1st and total
-               order indices will be calculated and n(p+2) parameter sets
-               will be generated.
+    num_vars   : an integer number of parameters you will vary
+    names      : a list of strings with the names of the paramters
+    bounds     : a list of lists, where each inner list contains the
+                 upper and lower bounds for a given parameter.
+    n          : an integer number of initial samples to generate from
+                 the pseudo-random Sobol sequence. n parameter sets
+                 will be generated using the Sobol sequence, then the
+                 Saltelli cross-sampling method will be applied to give a
+                 total of 2n(p+1) parameter sets to be run if second_ord =
+                 True.
+    save_loc   : string of path to the directory where you would like to save
+                 the parameters.
+    second_ord : a boolean to indicate whether or not to calculate second
+                 order sensitivity indices.  If False, only 1st and total
+                 order indices will be calculated and n(p+2) parameter sets
+                 will be generated.
 
     Returns:
     --------
@@ -37,12 +40,22 @@ def gen_params(num_vars, names, bounds, n, second=True):
                  as given in this parameter set array (one row of results
                  for each row of parameters).
     """
-    problem = {'num_vars': num_vars, 'names': names, 'bounds': bounds}
-    param_sets = saltelli.sample(problem, n, calc_second_order=second)
+    # Check that num_vars is an integer
+    if not isinstance(num_vars, int):
+        raise TypeError('num_vars must be an integer')
+    # Check that bounds are specified for every variable
+    if num_vars != len(bounds):
+        raise ValueError('bounds must be same length as num_vars')
+    # Check that a name is given for every parameter
+    if num_vars != len(names):
+        raise ValueError('length of `names` must equal num_vars')
 
-    if second:
+    problem = {'num_vars': num_vars, 'names': names, 'bounds': bounds}
+    param_sets = saltelli.sample(problem, n, calc_second_order=second_ord)
+
+    if second_ord:
         print '%s simulations will be run' % (2*n * (problem['num_vars'] + 1))
-    elif second is False:
+    elif second_ord is False:
         print '%s simulations will be run' % (n * (problem['num_vars'] + 2))
 
     # Write the problem description to a file (required to run the analysis
@@ -51,7 +64,7 @@ def gen_params(num_vars, names, bounds, n, second=True):
     for i, name in enumerate(problem['names']):
         body += '%s %s %s\n' % (name, problem['bounds'][i][0],
                                 problem['bounds'][i][1])
-    with open('../../saparams_%s-parameters_%s-n.txt'
+    with open(save_loc+'/saparams_%s-parameters_%s-n.txt'
               % (num_vars, n), 'wb') as params:
         params.write(body)
 

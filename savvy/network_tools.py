@@ -56,7 +56,10 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     df = df_list[0]
     df2 = df_list[1]
 
-    # Check to make sure that there is a second order index dataframe
+    # Make sure sens is ST or S1
+    if sens not in set(['ST', 'S1']):
+        raise ValueError('sens must be ST or S1')
+    # Make sure that there is a second order index dataframe
     try:
         if not df2:
             raise Exception('Missing second order dataframe!')
