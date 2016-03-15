@@ -1,4 +1,5 @@
-""" Functions for setting up and carrying out a Sobol sensitivity analysis
+"""
+Functions for setting up and carrying out a Sobol sensitivity analysis
 on your model.
 
 This module requires the package SALib.  If you don't have SALib you can
@@ -22,33 +23,40 @@ def gen_params(num_vars, names, bounds, n, save_loc, second_ord=True):
     Saves a file with the information required for the analysis
     that will be performed later.
 
-    Parameters:
+    Parameters
     -----------
-    num_vars   : an integer number of parameters you will vary
-    names      : a list of strings with the names of the paramters
-    bounds     : a list of lists, where each inner list contains the
+    num_vars   : int
+                 the number of parameters you will vary.
+    names      : list
+                 list of strings with the names of the parameters
+    bounds     : list
+                 list of lists, where each inner list contains the
                  upper and lower bounds for a given parameter.
-    n          : an integer number of initial samples to generate from
+    n          : int
+                 number of initial samples to generate from
                  the pseudo-random Sobol sequence. n parameter sets
                  will be generated using the Sobol sequence, then the
                  Saltelli cross-sampling method will be applied to give a
                  total of 2n(p+1) parameter sets to be run if second_ord =
                  True.
-    save_loc   : string of path to the directory where you would like to save
-                 the parameters.
-    second_ord : a boolean to indicate whether or not to calculate second
+    save_loc   : str
+                 path to the directory where you would like to save the
+                 parameters.
+    second_ord : bool, optional
+                 a boolean to indicate whether or not to calculate second
                  order sensitivity indices.  If False, only 1st and total
                  order indices will be calculated and n(p+2) parameter sets
                  will be generated.
 
-    Returns:
+    Returns
     --------
-    param_sets : a numpy ndarray where each row is one set of parameter
-                 values.  You must run your model (in whatever environment
-                 is appropriate) with each of the sets of parameters from
-                 this array.  The output must be stored in the same order
-                 as given in this parameter set array (one row of results
-                 for each row of parameters).
+    param_sets : numpy ndarray
+         an ndarray where each row is one set of parameter
+         values.  You must run your model (in whatever environment
+         is appropriate) with each of the sets of parameters from
+         this array.  The output must be stored in the same order
+         as given in this parameter set array (one row of results
+         for each row of parameters).
     """
     # Check that num_vars is an integer
     if not isinstance(num_vars, int):
@@ -91,25 +99,33 @@ def analyze_sensitivity(problem, Y, column, delimiter, order, name,
     processing is possible.  Results are saved to a file using the
     name parameter.
 
-    Parameters:
+    Parameters
     ----------
-    problem    : string with the path to the saparams* file that contains
+    problem    : str
+                 the path to the saparams* file that contains
                  the problem definition.
-    Y          : string with the path to the results file.  Results should
+    Y          : str
+                 the path to the results file.  Results should
                  be in a file without a header.  Each line of the file must
                  contain results that correspond to the same line of the
-                 param_sets generated in gen_params()
-    column     : integer specifying the column number of the results to analyze
-                 (zero indexed)
-    delimiter  : string specifying the column delimiter used in the results
-    order      : int; the maximum order of sensitivity indices [1 or 2]
-    name       : string with the name of the output measure to use when saving
+                 param_sets generated in gen_params().
+    column     : int
+                 integer specifying the column number of the results to
+                 analyze (zero indexed).
+    delimiter  : str
+                 string specifying the column delimiter used in the results.
+    order      : int
+                 the maximum order of sensitivity indices [1 or 2].
+    name       : str
+                 the name of the output measure to use when saving
                  the sensitivity analysis results to a file.
-    parallel   : boolean indicating whether to use parallel processing
-    processors : if parallel is True, this is an integer specifying the number
+    parallel   : bool, optional
+                 boolean indicating whether to use parallel processing.
+    processors : int, optional
+                 if parallel is True, this is an integer specifying the number
                  of processors to use.
 
-    Returns:
+    Returns
     --------
     None
     """

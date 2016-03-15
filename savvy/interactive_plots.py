@@ -31,29 +31,38 @@ def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
     analysis output files and lets you choose which output to view
     using tabs.
 
-    Parameters:
+    Parameters
     -----------
-    sa_dict                : a dictionary with all the sensitivity analysis
-                             results
-    demo                   : plot only two outcomes instead of all outcomes
-                             for demo purpose
-    min_val                : a float indicating the minimum sensitivity value
-                             to be shown
-    top                    : integer indicating the number of parameters to
-                             display (highest sensitivity values)
-    stacked                : Boolean indicating in bars should be stacked for
+    sa_dict                : dict
+                             a dictionary with all the sensitivity analysis
+                             results.
+    demo                   : bool, optional
+                             plot only two outcomes instead of all outcomes
+                             for demo purpose.
+    min_val                : float, optional
+                             a float indicating the minimum sensitivity value
+                             to be shown.
+    top                    : int, optional
+                             integer indicating the number of parameters to
+                             display (highest sensitivity values).
+    stacked                : bool, optional
+                             Boolean indicating in bars should be stacked for
                              each parameter.
-    error_bars             : Booelan indicating if error bars are shown (True)
-                             or are omitted (False)
-    log_axis               : Boolean indicating if log axis should be used
+    error_bars             : bool, optional
+                             Boolean indicating if error bars are shown (True)
+                             or are omitted (False).
+    log_axis               : bool, optional
+                             Boolean indicating if log axis should be used
                              (True) or if a linear axis should be used (False).
-    highlighted_parameters : List of strings indicating which parameter wedges
-                             will be highlighted
+    highlighted_parameters : list, optional
+                             List of strings indicating which parameter wedges
+                             will be highlighted.
 
-    Returns:
+    Returns
     --------
-    p :  a Bokeh plot generated with plotting.make_plot() that includes tabs
-         for all the possible outputs.
+    p : bokeh plot
+        a Bokeh plot generated with plotting.make_plot() that includes tabs
+        for all the possible outputs.
     """
 
     tabs_dictionary = {}
@@ -87,14 +96,16 @@ def interact_with_plot_all_outputs(sa_dict, demo=False, manual=True):
     This function adds the ability to interactively adjust all of the
     plotting.make_plot() arguments.
 
-    Parameters:
+    Parameters
     ----------
-    sa_dict : a dictionary with all the sensitivity analysis results
-    demo : plot only few outcomes for demo purpose
+    sa_dict : dict
+              a dictionary with all the sensitivity analysis results.
+    demo    : bool, optional
+              plot only few outcomes for demo purpose.
 
-    Returns:
+    Returns
     -------
-    An interactive plot
+    Interactive widgets to controll plot
     """
     min_val_box = BoundedFloatText(value=0.01, min=0, max=1,
                                    description='Min value:')
@@ -128,17 +139,21 @@ def plot_all_second_order(sa_dict, top=5, mirror=True, include=[]):
     sensitivity analysis output files and lets you choose which output to view
     using tabs
 
-    Parameters:
+    Parameters
     -----------
-    sa_dict : a dictionary with all the sensitivity analysis results
-    top     : integer indicating the number of parameters to display
-              (highest sensitivity values)
-    include : a list of parameters you would like to include even if they
-              are not in the top `top` values
+    sa_dict : dict
+              a dictionary with all the sensitivity analysis results.
+    top     : int, optional
+              the number of parameters to display
+              (highest sensitivity values).
+    include : list, optional
+              a list of parameters you would like to include even if they
+              are not in the top `top` values.
 
-    Returns:
+    Returns
     --------
-    p :  a Bokeh plot that includes tabs for all the possible outputs.
+    p : bokeh plot
+        a Bokeh plot that includes tabs for all the possible outputs.
     """
 
     tabs_dictionary = {}

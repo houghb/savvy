@@ -31,22 +31,28 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     order sensitivities of the interactions between those vertices,
     with sensitivities greater than 'edge_cutoff'.
 
-    Parameters:
+    Parameters
     -----------
-    df_list     : A list of two dataframes.  The first dataframe should be
+    df_list     : list
+                  A list of two dataframes.  The first dataframe should be
                   the first/total order sensitivities collected by the
                   function data_processing.get_sa_data().
-    sens        : A string with the name of the sensitivity that you would
+    sens        : str, optional
+                  A string with the name of the sensitivity that you would
                   like to use for the vertices ('ST' or 'S1').
-    top         : An integer specifying the number of vertices to display (
+    top         : int, optional
+                  An integer specifying the number of vertices to display (
                   the top sensitivity values).
-    min_sens    : A float with the minimum sensitivity to allow in the graph.
-    edge_cutoff : A float specifying the minimum second order sensitivity to
+    min_sens    : float, optional
+                  A float with the minimum sensitivity to allow in the graph.
+    edge_cutoff : float, optional
+                  A float specifying the minimum second order sensitivity to
                   show as an edge in the graph.
 
-    Returns:
+    Returns
     --------
-    g : a graph-tool graph object of the network described above.  Each
+    g : graph-tool object
+        a graph-tool graph object of the network described above.  Each
         vertex has properties 'param', 'sensitivity', and 'confidence'
         corresponding to the name of the parameter, value of the sensitivity
         index, and it's confidence interval.  The only edge property is
@@ -139,18 +145,21 @@ def plot_network_random(g, inline=True, filename=None):
     parameters and they are connected by edges whose thickness indicates the
     value of the second order sensitivity.
 
-    Parameters:
+    Parameters
     -----------
-    g        : The graph to plot
-    inline   : Boolean indicating whether the plot should be shown inline in
+    g        : graph-tool graph
+               The graph to plot.
+    inline   : bool, optional
+               Boolean indicating whether the plot should be shown inline in
                an ipython notebook.  If false the plot is created in its own
                window and is somewhat interactive.
-    filename : If you would like to save the plot to a file specify a
+    filename : str, optional
+               If you would like to save the plot to a file specify a
                filename (with an extension of pdf or png).
 
-    Returns:
+    Returns
     --------
-    Makes a plot
+    graph-tool plot
     """
 
     draw.graph_draw(g,
@@ -177,18 +186,21 @@ def plot_network_circle(g, inline=True, filename=None):
     connected by edges whose thickness indicates the value of the second
     order sensitivity.
 
-    Parameters:
+    Parameters
     -----------
-    g        : The graph to plot
-    inline   : Boolean indicating whether the plot should be shown inline in
+    g        : graph-tool graph
+               The graph to plot.
+    inline   : bool, optional
+               Boolean indicating whether the plot should be shown inline in
                an ipython notebook.  If false the plot is created in its own
                window and is somewhat interactive.
-    filename : If you would like to save the plot to a file specify a
+    filename : str, optional
+               If you would like to save the plot to a file specify a
                filename (with an extension of pdf or png).
 
-    Returns:
+    Returns
     --------
-    Makes a plot
+    graph-tool plot
     """
 
     state = community.minimize_nested_blockmodel_dl(g, deg_corr=True)

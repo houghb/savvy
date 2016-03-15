@@ -4,6 +4,7 @@ This module creates plots for visualizing sensitivity analysis dataframes.
 - make_plot() creates a radial plot of the first and total order indices.
 - make_second_order_heatmap() creates a square heat map showing the second
 order interactions between model parameters.
+
 """
 from collections import OrderedDict
 
@@ -26,33 +27,44 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
     input being measured (Tmax, C, k2, etc.) and stats refer to the 1st or
     total order sensitivity index.
 
-    Parameters:
+    Parameters
     -----------
-    dataframe  : Dataframe containing sensitivity analysis results to be
-                 plotted
-    highlight  : List of strings indicating which parameter wedges will be
-                 highlighted
-    top        : Integer indicating the number of parameters to display
-                 (highest sensitivity values) (after minimum cutoff is applied)
-    minvalues  : Cutoff minimum for which parameters should be plotted (float).
+    dataframe  : pandas dataframe
+                 Dataframe containing sensitivity analysis results to be
+                 plotted.
+    highlight  : lst, optional
+                 List of strings indicating which parameter wedges will be
+                 highlighted.
+    top        : int, optional
+                 Integer indicating the number of parameters to display
+                 (highest sensitivity values) (after minimum cutoff is
+                 applied).
+    minvalues  : float, optional
+                 Cutoff minimum for which parameters should be plotted.
                  Applies to total order only.
-    stacked    : Boolean indicating in bars should be stacked for each
+    stacked    : bool, optional
+                 Boolean indicating in bars should be stacked for each
                  parameter (True) or unstacked (False).
-    lgaxis     : Boolean indicating if log axis should be used (True) or if a
+    lgaxis     : bool, optional
+                 Boolean indicating if log axis should be used (True) or if a
                  linear axis should be used (False).
-    errorbar   : Boolean indicating if error bars are shown (True) or are
-                 omitted (False)
-    showS1     : Boolean indicating whether 1st order sensitivity indices
-                 will be plotted (True) or omitted (False)
-    showST     : Boolean indicating whether total order sensitivity indices
+    errorbar   : bool, optional
+                 Boolean indicating if error bars are shown (True) or are
+                 omitted (False).
+    showS1     : bool, optional
+                 Boolean indicating whether 1st order sensitivity indices
+                 will be plotted (True) or omitted (False).
+    showST     : bool, optional
+                 Boolean indicating whether total order sensitivity indices
                  will be plotted (True) or omitted (False).
 
                  **Note if showS1 and showST are both false, the plot will
                  default to showing ST data only instead of a blank plot**
 
-    Returns:
+    Returns
     --------
-    p: A Bokeh figure of the data to be plotted
+    p : bokeh figure
+        A Bokeh figure of the data to be plotted
     """
 
     df = dataframe
@@ -366,25 +378,31 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
     dataframe.  If you are choosing a high value of `top` then making
     this plot gets expensive and it is recommended to set mirror to False.
 
-    Parameters:
+    Parameters
     -----------
-    df     : The dataframe with second order sensitivity indices. This
+    df     : pandas dataframe
+             dataframe with second order sensitivity indices. This
              dataframe should be formatted in the standard output format
              from a Sobol sensitivity analysis in SALib.
-    top    : An integer specifying the number of parameter interactions to
+    top    : int, optional
+             integer specifying the number of parameter interactions to
              plot (those with the 'top' greatest values are displayed).
-    name   : An optional string indicating the name of the output measure
+    name   : str, optional
+             string indicating the name of the output measure
              you are plotting.
-    mirror : A boolean indicating whether you would like to plot the mirror
+    mirror : bool, optional
+             boolean indicating whether you would like to plot the mirror
              image (reflection across the diagonal).  This mirror image
              contains the same information as plotted already, but will
              increase the computation time for large dataframes.
-    include: a list of parameters that you would like to make sure are shown
+    include: list, optional
+             a list of parameters that you would like to make sure are shown
              on the heat map (even if they are not in the `top` subset)
 
-    Returns:
+    Returns
     --------
-    p : A Bokeh figure to be plotted
+    p : bokeh figure
+        A Bokeh figure to be plotted
     """
 
     # Confirm that df contains second order sensitivity indices
