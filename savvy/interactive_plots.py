@@ -10,6 +10,8 @@ numpy
 pandas
 os
 bokeh
+ipywidgets
+collections
 """
 
 import data_processing as dp
@@ -37,7 +39,7 @@ from ipywidgets import (BoundedFloatText, FloatText, Checkbox,
 from IPython.html.widgets import interact, fixed
 
 
-def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
+def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
                      error_bars=True, log_axis=True,
                      highlighted_parameters=[]):
     """
@@ -49,11 +51,13 @@ def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
     -----------
     sa_dict                : a dictionary with all the sensitivity analysis
                              results
+    demo                   : plot only two outcomes instead of all outcomes 
+                             for demo purpose
     min_val                : a float indicating the minimum sensitivity value
                              to be shown
     top                    : integer indicating the number of parameters to
                              display (highest sensitivity values)
-    stacked1               : Boolean indicating in bars should be stacked for
+    stacked                : Boolean indicating in bars should be stacked for
                              each parameter.
     error_bars             : Booelan indicating if error bars are shown (True)
                              or are omitted (False)
@@ -69,12 +73,15 @@ def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
     """
 
     tabs_dictionary = {}
-    outcomes_array = []
-
-    for files in sa_dict.keys():
-        outcomes_array.append(sa_dict[files][0])
-
-    for i in range(len(sa_dict)):
+    outcomes_array = [] 
+    if demo:
+        for files in sa_dict.keys()[0:2]:
+            outcomes_array.append(sa_dict[files][0])
+    else: 
+        for files in sa_dict.keys():
+            outcomes_array.append(sa_dict[files][0])
+    
+    for i in range(len(outcomes_array)):
         p = make_plot(outcomes_array[i],
                       top=top,
                       minvalues=min_val,
@@ -91,7 +98,7 @@ def plot_all_outputs(sa_dict, min_val=0.01, top=100, stacked=True,
     return p
 
 
-def interact_with_make_plot(sa_dict):
+def interact_with_make_plot(sa_dict, demo=False):
     """
     This function adds the ability to interactively adjust all of the
     plotting.make_plot() arguments.
@@ -99,6 +106,7 @@ def interact_with_make_plot(sa_dict):
     Parameters:
     ----------
     sa_dict : a dictionary with all the sensitivity analysis results
+    demo : plot only few outcomes for demo purpose
 
     Returns:
     -------
@@ -119,6 +127,7 @@ def interact_with_make_plot(sa_dict):
 
     return interact(plot_all_outputs,
                     sa_dict=fixed(sa_dict),
+                    demo = fixed(demo),
                     min_val=min_val_box,
                     top=top_box,
                     stacked=stacks,
