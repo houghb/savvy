@@ -56,7 +56,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
     """
 
     df = dataframe
-
+    top = int(top)
     # Initialize boolean checks and check dataframe structure
     if (('S1' not in df) or ('ST' not in df) or ('Parameter' not in df) or
        ('ST_conf' not in df) or ('S1_conf' not in df)):
