@@ -2,7 +2,7 @@
 This module creates plots for visualizing sensitivity analysis dataframes.
 
 - make_plot() creates a radial plot of the first and total order indices.
-- make_second_order_heatmap() creates a square heatmap showing the second
+- make_second_order_heatmap() creates a square heat map showing the second
 order interactions between model parameters.
 """
 from collections import OrderedDict
@@ -380,7 +380,7 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
              contains the same information as plotted already, but will
              increase the computation time for large dataframes.
     include: a list of parameters that you would like to make sure are shown
-             on the heatmap (even if they are not in the `top` subset)
+             on the heat map (even if they are not in the `top` subset)
 
     Returns:
     --------
@@ -414,7 +414,7 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
     xlabels = labels
     ylabels = labels
 
-    # Use this to scale the heatmap so the max sensitivity index is darkest
+    # Use this to scale the heat map so the max sensitivity index is darkest
     maxval = np.max(df.S2)
 
     xlabel = []
@@ -427,7 +427,7 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
             xlabel.append(px)
             ylabel.append(py)
             # sens is a dataframe with S2 and S2_conf that is stored for
-            # each box of the heatmap
+            # each box of the heat map
             sens = (df[df.Parameter_1.isin([px]) & df.Parameter_2.isin([py])]
                     .ix[:, ['S2', 'S2_conf']])
             # dfs can be empty if there are no corresponding pairs in the
