@@ -17,8 +17,9 @@ visualizations offer better insight into these relative magnitudes.
 try:
     from graph_tool import Graph, draw, community
 except ImportError:
-    print ('graph-tool package is not installed!\n You will not be able to '
-           'use functions from `network_tools`')
+    print ('----\ngraph-tool package is not installed - please install it to '
+           'use network_tools!\nOther modules in savvy are independent'
+           'of graph-tool.')
 
 
 def build_graph(df_list, sens='ST', top=410, min_sens=0.01,

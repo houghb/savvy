@@ -11,7 +11,7 @@ from subprocess import call
 try:
     from SALib.sample import saltelli
 except ImportError:
-    print ('SALib is not installed - please install it to use '
+    print ('----\nSALib is not installed - please install it to use '
            'sensitivity_tools.\nOther modules in savvy are independent of '
            'SALib.')
 
