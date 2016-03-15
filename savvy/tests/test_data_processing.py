@@ -1,5 +1,5 @@
 import unittest
-import os
+import os.path as op
 
 from pandas.util.testing import assert_frame_equal
 try:
@@ -7,12 +7,13 @@ try:
 except:
     import pickle
 
+import savvy
 from ..data_processing import get_sa_data, find_unimportant_params
 
+path = op.join(savvy.__path__[0], 'sample_data_files/')
+
 # Load a sample file to use for testing
-path = os.getcwd().split('savvy')[0] + 'savvy/sample_data_files/'
-comps = pickle.load(open(path+'unittest_comparisons.pkl',
-                               'rb'))
+comps = pickle.load(open(path + 'unittest_comparisons.pkl', 'rb'))
 
 
 class TestGetSAData(unittest.TestCase):

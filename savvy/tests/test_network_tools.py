@@ -1,18 +1,18 @@
 import unittest
-import os
+import os.path as op
 
 try:
     import cPickle as pickle
 except:
     import pickle
 
+import savvy
 from ..network_tools import (build_graph, plot_network_random,
                              plot_network_circle)
 
 # Load a sample file to use for testing
-sample_files_path = os.getcwd().split('savvy')[0] + 'savvy/sample_data_files/'
-comps = pickle.load(open(sample_files_path+'unittest_comparisons.pkl',
-                               'rb'))
+path = op.join(savvy.__path__[0], 'sample_data_files/')
+comps = pickle.load(open(path+'unittest_comparisons.pkl', 'rb'))
 
 
 class TestBuildGraph(unittest.TestCase):

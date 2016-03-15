@@ -1,1 +1,0 @@
-The files in this folder are sample output files from a Sobol sensitivity analysis using SALib.  They are used in unit tests for various modules, and can also be used to demonstrate the package's visualization functionality.

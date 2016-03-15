@@ -1,18 +1,19 @@
 """Unit tests for make_plot"""
 
 import unittest
+import os.path as op
 
-import os
 try:
     import cPickle as pickle
 except:
     import pickle
 
+import savvy
 from ..plotting import make_plot, make_second_order_heatmap
 
 # Load a sample file to use for testing
-sample_files_path = os.getcwd().split('savvy')[0] + 'savvy/sample_data_files/'
-comparisons = pickle.load(open(sample_files_path+'unittest_comparisons.pkl',
+path = op.join(savvy.__path__[0], 'sample_data_files/')
+comparisons = pickle.load(open(path+'unittest_comparisons.pkl',
                                'rb'))
 # Dataframe of first/total order sample data
 df = comparisons[0]['sample-output1'][0]

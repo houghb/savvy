@@ -48,7 +48,7 @@ def read_file(path, numrows=None, drop=False, sep=','):
     return df
 
 
-def get_params(path='../savvy_data/input_parameters.csv',
+def get_params(path='./input_parameters.csv',
                numrows=None, drop=['End_time', 'Oxygen']):
     """
     NOTE: This function is specific to our lignin modeling dataset
@@ -78,7 +78,7 @@ def get_params(path='../savvy_data/input_parameters.csv',
     return read_file(path, numrows=numrows, drop=drop)
 
 
-def get_results(path='../savvy_data/results.csv',
+def get_results(path='./results.csv',
                 numrows=None, drop=['light_aromatic_C-C',
                                     'light_aromatic_methoxyl']):
     """
@@ -102,7 +102,7 @@ def get_results(path='../savvy_data/results.csv',
     return read_file(path, numrows=numrows, drop=drop)
 
 
-def get_sa_data(path='../savvy_data/'):
+def get_sa_data(path='.'):
     """
     This function reads and processes all the sensitivity analysis results
     in a specified folder and returns a dictionary with the corresponding
@@ -214,7 +214,7 @@ def get_sa_data(path='../savvy_data/'):
     return sens_dfs
 
 
-def find_unimportant_params(header='ST', path='../savvy_data/'):
+def find_unimportant_params(header='ST', path='.'):
     """
     This function finds which parameters have sensitivities and confidence
     intervals equal to exactly 0.0, which means those parameters have no
