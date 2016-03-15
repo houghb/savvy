@@ -16,7 +16,7 @@ collections
 """
 from bokeh.models.widgets import Panel, Tabs
 from bokeh.plotting import show
-from ipywidgets import BoundedFloatText, FloatText, Checkbox, SelectMultiple
+from ipywidgets import BoundedFloatText, IntText, Checkbox, SelectMultiple
 from IPython.html.widgets import interact, fixed
 
 from plotting import make_plot, make_second_order_heatmap
@@ -35,7 +35,7 @@ def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
     -----------
     sa_dict                : a dictionary with all the sensitivity analysis
                              results
-    demo                   : plot only two outcomes instead of all outcomes 
+    demo                   : plot only two outcomes instead of all outcomes
                              for demo purpose
     min_val                : a float indicating the minimum sensitivity value
                              to be shown
@@ -57,14 +57,14 @@ def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
     """
 
     tabs_dictionary = {}
-    outcomes_array = [] 
+    outcomes_array = []
     if demo:
         for files in sa_dict.keys()[0:2]:
             outcomes_array.append(sa_dict[files][0])
-    else: 
+    else:
         for files in sa_dict.keys():
             outcomes_array.append(sa_dict[files][0])
-    
+
     for i in range(len(outcomes_array)):
         p = make_plot(outcomes_array[i],
                       top=top,
@@ -98,7 +98,7 @@ def interact_with_plot_all_outputs(sa_dict, demo=False, manual=True):
     """
     min_val_box = BoundedFloatText(value=0.01, min=0, max=1,
                                    description='Min value:')
-    top_box = FloatText(value=20, description='Show top:')
+    top_box = IntText(value=20, description='Show top:')
     stacks = Checkbox(description='Show stacked plots:', value=True,)
     error_bars = Checkbox(description='Show error bars:', value=True)
     log_axis = Checkbox(description='Use log axis:', value=True)
