@@ -1,7 +1,6 @@
 """
 This modules adds interactivity to plots in plotting.py through Bokeh tabs and
 ipython widgets.
-<<<<<<< HEAD
 
 Dependencies:
 plotting.py
@@ -13,15 +12,13 @@ os
 bokeh
 ipywidgets
 collections
-=======
->>>>>>> origin/master
 """
 from bokeh.models.widgets import Panel, Tabs
 from bokeh.plotting import show
 from ipywidgets import BoundedFloatText, FloatText, Checkbox, SelectMultiple
 from IPython.html.widgets import interact, fixed
 
-from .plotting import make_plot, make_second_order_heatmap
+from plotting import make_plot, make_second_order_heatmap
 
 
 def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
