@@ -9,15 +9,16 @@ except:
 from ..network_tools import (build_graph, plot_network_random,
                              plot_network_circle)
 
+# Load a sample file to use for testing
 sample_files_path = os.getcwd().split('savvy')[0] + 'savvy/sample_data_files/'
-comparisons = pickle.load(open(sample_files_path+'unittest_comparisons.pkl',
+comps = pickle.load(open(sample_files_path+'unittest_comparisons.pkl',
                                'rb'))
 
 
 class TestBuildGraph(unittest.TestCase):
     """Tests for build_graph() function"""
 
-    def test_for_acceptable_sens_arg(self, comps=comparisons):
+    def test_for_acceptable_sens_arg(self):
         """Is an exception raised if sens is an inappropriate value?"""
         df_list = comps[0]['sample-output1']
         self.assertRaises(ValueError, build_graph, df_list, 'tot', 10,
@@ -25,13 +26,13 @@ class TestBuildGraph(unittest.TestCase):
         self.assertRaises(ValueError, build_graph, df_list, 1, 10,
                           0.01, 0.0)
 
-    def test_for_second_order_df(self, comps=comparisons):
+    def test_for_second_order_df(self):
         """Is an exception raised if there is not a second order dataframe?"""
         df_list = comps[1]['sample-output3-no_second_order']
         self.assertRaises(Exception, build_graph, df_list, 'ST', 10,
                           0.01, 0.0)
 
-    def test_for_correct_num_vertices(self, comps=comparisons):
+    def test_for_correct_num_vertices(self):
         """Does the graph object produced by build_graph have the correct
         number of vertices?"""
         df_list = comps[0]['sample-output2']
@@ -40,7 +41,7 @@ class TestBuildGraph(unittest.TestCase):
         self.assertEqual(expected_vertices, g.num_vertices(),
                          msg='num_vertices does not match expected')
 
-    def test_for_correct_num_edges(self, comps=comparisons):
+    def test_for_correct_num_edges(self):
         """Does the graph object produced by build_graph have the correct
         number of edges?"""
         df_list = comps[0]['sample-output2']

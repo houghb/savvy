@@ -18,48 +18,41 @@ from bokeh.charts import Bar
 def make_plot(dataframe=pd.DataFrame(), highlight=[],
               top=100, minvalues=0.01, stacked=True, lgaxis=True,
               errorbar=True, showS1=True, showST=True):
-    """Basic method to plot sensitivity anlaysis.
+    """
+    Basic method to plot first and total order sensitivity indices.
 
-    This is the method to generate a bokeh plot similar to the burtin example
-    template at the bokeh website. For clarification, parameters refer to an
+    This is the method to generate a Bokeh plot similar to the burtin example
+    template at the Bokeh website. For clarification, parameters refer to an
     input being measured (Tmax, C, k2, etc.) and stats refer to the 1st or
     total order sensitivity index.
 
     Parameters:
     -----------
-    dataframe : Dataframe containing sensitivity analysis results to be plotted
+    dataframe  : Dataframe containing sensitivity analysis results to be
+                 plotted
+    highlight  : List of strings indicating which parameter wedges will be
+                 highlighted
+    top        : Integer indicating the number of parameters to display
+                 (highest sensitivity values) (after minimum cutoff is applied)
+    minvalues  : Cutoff minimum for which parameters should be plotted (float).
+                 Applies to total order only.
+    stacked    : Boolean indicating in bars should be stacked for each
+                 parameter (True) or unstacked (False).
+    lgaxis     : Boolean indicating if log axis should be used (True) or if a
+                 linear axis should be used (False).
+    errorbar   : Boolean indicating if error bars are shown (True) or are
+                 omitted (False)
+    showS1     : Boolean indicating whether 1st order sensitivity indices
+                 will be plotted (True) or omitted (False)
+    showST     : Boolean indicating whether total order sensitivity indices
+                 will be plotted (True) or omitted (False).
 
-    highlight: List of strings indicating which parameter wedges will be
-               highlighted
-
-    top: Integer indicating the number of parameters to display (highest
-                 sensitivity values) (after minimum cutoff is applied)
-
-    minvalues: Cutoff minimum for which parameters should be plotted (float).
-               Applies to total order only.
-
-    stacked: Boolean indicating in bars should be stacked for each parameter
-             (True) or unstacked (False).
-
-    lgaxis: Boolean indicating if log axis should be used (True) or if a
-            linear axis should be used (False).
-
-    errorbar: Booelan indicating if error bars are shown (True) or are omitted
-              (False)
-
-    showS1: Boolean indicating whether 1st order sensitivity indices will be
-            plotted (True) or omitted (False)
-
-    showST: Boolean indicating whether total order sensitivity indices will be
-            plotted (True) or omitted (False).
-
-            **Note if showS1 and showST are both false, the plot will default
-              to showing ST data only instead of a blank plot**
+                 **Note if showS1 and showST are both false, the plot will
+                 default to showing ST data only instead of a blank plot**
 
     Returns:
     --------
-    p: Figure of the data to be plotted
-
+    p: A Bokeh figure of the data to be plotted
     """
 
     df = dataframe
@@ -95,7 +88,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
                   True: "#aeaeb8",
                   False: "#e6e6e6",
                  }
-
+    # Switch to bar chart if dataframe shrinks below 5 parameters
     if len(df) <= 5:
         if stacked is False:
             data = {
@@ -133,6 +126,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
     # Reset index of dataframe.
     for i in range(2, 4):
         error_color[i] = colors[i]
+
     # Sizing parameters
     width = 800
     height = 800
@@ -147,7 +141,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
         small_angle = big_angle / 5
     else:
         small_angle = big_angle / 3
-
+    # tools enabled for bokeh figure
     plottools = "hover, wheel_zoom, save, reset, resize"  # , tap"
     # Initialize figure with tools, coloring, etc.
     p = figure(plot_width=width, plot_height=height, title="",
@@ -297,10 +291,12 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
                                                        df.S1_err_angle,
                                                        ).reset_index(drop=True)
                          })
+    # removed S1 or ST values if indicated by input
     if showS1 is False:
         pdata = pdata.head(len(df))
     if showST is False:
         pdata = pdata.tail(len(df))
+    # convert dataframe to ColumnDataSource for glyphs
     pdata_s = ColumnDataSource(pdata)
 
     colors = [back_color[highl] for highl in df.highlighted]
@@ -364,7 +360,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
     return p
 
 
-def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
+def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
     """
     Plot a heat map of the second order sensitivity indices from a given
     dataframe.  If you are choosing a high value of `top` then making
@@ -380,29 +376,34 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
     name   : An optional string indicating the name of the output measure
              you are plotting.
     mirror : A boolean indicating whether you would like to plot the mirror
-             image (reflection across the y=-1 axis).  This mirror image
-             contains the same information as plotted already, but will increase
-             the computation time for large dataframes.
+             image (reflection across the diagonal).  This mirror image
+             contains the same information as plotted already, but will
+             increase the computation time for large dataframes.
     include: a list of parameters that you would like to make sure are shown
-             on the heatmap (even if they are not in the top subset you specify)
+             on the heatmap (even if they are not in the `top` subset)
 
     Returns:
     --------
-    p : A bokeh figure to be plotted
+    p : A Bokeh figure to be plotted
     """
+
+    # Confirm that df contains second order sensitivity indices
+    if (list(df.columns.values) !=
+            ['Parameter_1', 'Parameter_2', 'S2', 'S2_conf']):
+        raise TypeError('df must contain second order sensitivity data')
+
     # Make sure `top` != 0 (it must be at least 1, even if a list is
     # specified for `include`.
-    if top == 0:
+    if top <= 0:
         top = 1
+        print '`top` cannot be <= 0; it has been set to 1'
 
     # Colormap to use for plot
     colors = ["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6",
               "#4292c6", "#2171b5", "#08519c", "#08306b"]
 
-    # Make a new dataframe with only the top parameters
+    # Slice the dataframe to include only the top parameters
     df_top = df.sort_values('S2', ascending=False).head(top)
-#     df = df.head(top)
-#     df = df.reset_index(drop=True)
 
     # Make a list of all the parameters that interact with each other
     labels = list(set(
@@ -436,9 +437,9 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
                 s2.append(float('NaN'))
                 s2_conf.append(float('NaN'))
                 color.append("#b3b3b3")
+            # This heat map is symmetric across the diagonal, so this elif
+            # statement populates the mirror image if you've chosen to
             elif sens.empty and mirror:
-                # This heat map is symmetric across the diagonal, so this
-                # if statement populates the mirror image if you've chosen to
                 sens_mirror = (df[df.Parameter_1.isin([py]) &
                                   df.Parameter_2.isin([px])]
                                .ix[:, ['S2', 'S2_conf']])
@@ -451,6 +452,7 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
                     s2_conf.append(sens_mirror.S2_conf.values[0])
                     color.append(colors[int(round((sens_mirror.S2.values[0] /
                                                    maxval) * 7) + 1)])
+            # This else handles the standard (un-mirrored) boxes of the plot
             else:
                 s2.append(sens.S2.values[0])
                 s2_conf.append(sens.S2_conf.values[0])
@@ -460,12 +462,12 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
     source = ColumnDataSource(data=dict(xlabel=xlabel, ylabel=ylabel, s2=s2,
                               s2_conf=s2_conf, color=color))
 
+    # Initialize the plot
     plottools = "resize, hover, save, pan, box_zoom, wheel_zoom, reset"
     p = figure(title="%s second order sensitivities" % name,
                x_range=list(reversed(labels)), y_range=labels,
                x_axis_location="above", plot_width=700, plot_height=700,
                toolbar_location="right", tools=plottools)
-
     p.grid.grid_line_color = None
     p.axis.axis_line_color = None
     p.axis.major_tick_line_color = None
@@ -473,6 +475,7 @@ def make_second_order_heatmap(df, top=20, name='', mirror=True, include=[]):
     p.axis.major_label_standoff = 0
     p.xaxis.major_label_orientation = 1.1
 
+    # Plot the second order data
     p.rect("xlabel", "ylabel", 1, 1, source=source,
            color="color", line_color=None)
 
