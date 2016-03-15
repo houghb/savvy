@@ -11,9 +11,10 @@ savvy was written to visualize the total, first order, and second order sensitiv
 ```python
 import copy
 
-import savvy
 from bokeh.plotting import show, output_notebook
 import os.path as op
+
+import savvy
 import savvy.data_processing as dp
 import savvy.interactive_plots as ip
 from savvy.plotting import make_plot, make_second_order_heatmap
@@ -34,12 +35,13 @@ ip.interact_with_plot_all_outputs(sa_dict)
 ip.plot_all_second_order(sa_dict, top=5, mirror=True)
 
 
-# Graph of the second order interactions and first/total order indices (set inline to false for an interactive window)
+# Network plot of the second order interactions
+# and first/total order indices
+# (set inline to false for an interactive window)
 sa_dict_net = copy.deepcopy(sa_dict)
-g = nt.build_graph(sa_dict_net['sample-output1'], sens='ST', top=40, min_sens=0.01,
-                   edge_cutoff=0.0)
+g = nt.build_graph(sa_dict_net['sample-output1'], sens='ST', top=40,
+                   min_sens=0.01, edge_cutoff=0.0)
 nt.plot_network_circle(g, inline=True)
-
 ```
 ---
 ### Directory structure
@@ -56,7 +58,12 @@ savvy Home (master)
 |  
 |----- doc
 |     |----- images
-|     |      |  ...several images used in our documentation...
+|     |      |    Motivation.png
+|     |      |    Network_graph.png
+|     |      |    savvy_diagram.png
+|     |      |    savvy_logo.png
+|     |      |    savvy_logo_panel.png
+|     |
 |----- savvy
 |     |   __init__.py
 |     |   data_processing.py
@@ -103,7 +110,9 @@ Python version 2.7  ([https://www.python.org/](https://www.python.org/))
 - matplotlib 1.5.1
 - ipywidgets 4.1.1
 - SALib 0.7.1 (To perform sensitivity analysis)
-- graph-tool 2.12 (To generate network plots)
+- graph-tool 2.12 (To generate network plots)^
+
+  ^ **not included in requirements.txt**
 
 **License information:**   
 savvy is licensed under a BSD 2-clause “Simplified” License. The objective behind this choice of licensing is to make the content reproducible and make it useful for as many people as possible. We want to maximize the two-way collaborations with minimum restrictions, so that developers of other projects can easily utilize, patch, improve, and cite this code.
@@ -116,12 +125,14 @@ For detailed description of the contents of license please refer to [License](ht
 
 **[doc](https://github.com/houghb/savvy/tree/master/doc)** - To be completed.  This folder will contain the project documentation.
 
+**[doc/images](https://github.com/houghb/savvy/tree/master/doc/images)** - Contains images of sample plots, package workflow, as well as the savvy logo.
+
 **[savvy](https://github.com/houghb/savvy/tree/master/savvy)** - Houses modules to visualize the sensitivity analysis results.
 
 -  `sensitivity_tools.py`: Carries out a sensitivity analysis on your own model using SALib.
 - `data_processing.py`: Reads, cleans, and reformats the results.
-- `plotting.py`: Methods used to display the data 1st and total order data in a radial plot or 2nd order data as a heat map.
-- `interactive_plots.py`: Allows for user interaction with the plots created in `plotting.py`
+- `plotting.py`: Plots 1st and total order sensitivity data as a radial plot and 2nd order data as a heat map.
+- `interactive_plots.py`: Allows for user interaction with the plots created.
 - `network_tools.py` is a module that creates a graph of the sensitivity data and displays it, but requires graph-tool which may not be available to all users.
 
 **[savvy/tests](https://github.com/houghb/savvy/tree/master/savvy/tests)** Contains unit tests for each of the modules.
