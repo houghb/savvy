@@ -12,6 +12,7 @@ os
 bokeh
 ipywidgets
 collections
+
 """
 from bokeh.models.widgets import Panel, Tabs
 from bokeh.plotting import show
@@ -20,6 +21,7 @@ from IPython.html.widgets import interact, fixed
 
 from plotting import make_plot, make_second_order_heatmap
 
+import warnings; warnings.filterwarnings('ignore')
 
 def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
                      error_bars=True, log_axis=True,
@@ -80,7 +82,7 @@ def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
     return p
 
 
-def interact_with_make_plot(sa_dict, demo=False):
+def interact_with_plot_all_outputs(sa_dict, demo=False, manual=True):
     """
     This function adds the ability to interactively adjust all of the
     plotting.make_plot() arguments.
@@ -105,7 +107,7 @@ def interact_with_make_plot(sa_dict, demo=False):
     key = sa_dict.keys()[0]
     param_options = list(sa_dict[key][0].Parameter.values)
     highlighted = SelectMultiple(description="Choose parameters to highlight",
-                                 options=param_options)
+                                 options=param_options, value = ['Tmax', 'Carbon', 'Hydrogen',])
 
     return interact(plot_all_outputs,
                     sa_dict=fixed(sa_dict),
@@ -116,7 +118,7 @@ def interact_with_make_plot(sa_dict, demo=False):
                     error_bars=error_bars,
                     log_axis=log_axis,
                     highlighted_parameters=highlighted,
-                    __manual=True
+                    __manual=manual
                     )
 
 
@@ -157,3 +159,5 @@ def plot_all_second_order(sa_dict, top=5, mirror=True, include=[]):
     p = show(tabs)
 
     return p
+
+import warnings; warnings.filterwarnings('ignore')
