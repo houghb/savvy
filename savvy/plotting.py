@@ -1,8 +1,9 @@
 """
 This module creates plots for visualizing sensitivity analysis dataframes.
 
-- make_plot() creates a radial plot of the first and total order indices.
-- make_second_order_heatmap() creates a square heat map showing the second
+`make_plot()` creates a radial plot of the first and total order indices.
+
+`make_second_order_heatmap()` creates a square heat map showing the second
 order interactions between model parameters.
 
 """
