@@ -1,25 +1,22 @@
-import data_processing as dp
-from collections import OrderedDict
-import numpy as np
-import pandas as pd
-
-import os
-import sys
-import interactive_plots as ip
 import unittest
-from nose.tools import assert_equal, assert_in
-import matplotlib
-from matplotlib.testing.decorators import image_comparison
-from plotting import make_plot, make_second_order_heatmap
-from bokeh.plotting import figure, show, output_notebook, output_file
+import os.path as op
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
-import warnings; warnings.filterwarnings('ignore')
+import savvy
 
-output_notebook()
+path = op.join(savvy.__path__[0], 'sample_data_files/')
 
-sa_dict = dp.get_sa_data('savvy_data/')
+# Load a sample file to use for testing
+comps = pickle.load(open(path + 'unittest_comparisons.pkl', 'rb'))
 
-p = ip.interact_with_plot_all_outputs(sa_dict, demo = True, manual=False) 
+from .. import interactive_plots as ip
+import unittest
+
+sa_dict = comps[0]
+p = ip.interact_with_plot_all_outputs(sa_dict, demo=True, manual=False) 
 
 class TestInteractWithPlots(unittest.TestCase):
 

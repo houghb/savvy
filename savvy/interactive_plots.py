@@ -105,7 +105,7 @@ def interact_with_plot_all_outputs(sa_dict, demo=False, manual=True):
 
     Returns
     -------
-    Interactive widgets to controll plot
+    Interactive widgets to control plot
     """
     min_val_box = BoundedFloatText(value=0.01, min=0, max=1,
                                    description='Min value:')
