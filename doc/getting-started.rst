@@ -48,8 +48,12 @@ Using Homebrew in the command line, enter the following commands:
 ====================
 Quick Start Tutorial
 ====================
-This is a quick start that generates a radial plot, heatmap, and network plot using sample datafiles.
-Run the following code from a Jupyter Notebook.
+This is a quick start that generates a radial plot, heatmap, and network plot
+using sample datafiles.  Run the following code from a Jupyter Notebook.
+Examples of these types of plots are shown below.
+
+Alternatively, use the ``savvy_driver.ipynb`` in the repo to get started
+right away.
 
 .. code:: python
 
@@ -75,9 +79,8 @@ Run the following code from a Jupyter Notebook.
   # create interactive radial plots (or bar charts)
   ip.interact_with_plot_all_outputs(sa_dict)
 
-  # Plot the second order plots with tabs for all the options
+  # Plot the second order plots with tabs for all your outputs
   ip.plot_all_second_order(sa_dict, top=5, mirror=True)
-
 
   # Network plot of the second order interactions
   # and first/total order indices
@@ -86,3 +89,16 @@ Run the following code from a Jupyter Notebook.
   g = nt.build_graph(sa_dict_net['sample-output1'], sens='ST', top=40,
                      min_sens=0.01, edge_cutoff=0.0)
   nt.plot_network_circle(g, inline=True)
+
+
+Sample radial plot:
+
+.. image:: images/radial_plot.png
+
+Sample heat map of second order indices:
+
+.. image:: images/second_order_plot.png
+
+Sample network plot showing total order and second order indices:
+
+.. image:: images/Network_graph.png
