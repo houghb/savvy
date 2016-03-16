@@ -46,7 +46,9 @@ Using Homebrew in the command line, enter the following commands:
 ====================
 Quick Start Tutorial
 ====================
-This is a quick start that generates a radial plot, heatmap, and network plot using sample datafiles.::
+This is a quick start that generates a radial plot, heatmap, and network plot using sample datafiles.
+
+.. code:: python
 
   import copy
 
