@@ -118,7 +118,7 @@ def interact_with_plot_all_outputs(sa_dict, demo=False, manual=True):
     key = sa_dict.keys()[0]
     param_options = list(sa_dict[key][0].Parameter.values)
     highlighted = SelectMultiple(description="Choose parameters to highlight",
-                                 options=param_options, value = ['Tmax', 'Carbon', 'Hydrogen',])
+                                 options=param_options, value=[])
 
     return interact(plot_all_outputs,
                     sa_dict=fixed(sa_dict),
