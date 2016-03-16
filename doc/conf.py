@@ -14,25 +14,20 @@
 
 import sys
 import os
+import mock
 
-sys.path.append(os.path.abspath('../'))
-
-# from mock import Mock as MagicMock
-#
-# class Mock(MagicMock):
-#     @classmethod
-#     def __getattr__(cls, name):
-#             return Mock()
-#
-# MOCK_MODULES = ['ipywidgets', 'SALib']
-# # MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'pandas',
-# #                 'bokeh', 'SALib', 'ipywidgets', 'Jupyter']
-# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+MOCK_MODULES = ['bokeh', 'models.widgets', 'bokeh.models', 'Panel', 'Tabs',
+                'widgets', 'bokeh.models.widgets', 'show', 'bokeh.plotting',
+                'bokeh.charts', 'Bar', 'SALib', 'numpy', 'pandas',
+                'hashtable', 'tslib', 'lib', 'graph_tool', 'matplotlib',
+                'ipywidgets']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../savvy'))
 
 # -- General configuration ------------------------------------------------
 
@@ -45,7 +40,6 @@ sys.path.append(os.path.abspath('../'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-#    'numpydoc',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
 ]

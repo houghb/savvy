@@ -6,25 +6,25 @@ savvy.
 
 sensitivity_tools.py
 --------------------
-.. automodule:: savvy.sensitivity_tools
+.. automodule:: sensitivity_tools
    :members:
 
 data_processing.py
 ------------------
-.. automodule:: savvy.data_processing
+.. automodule:: data_processing
    :members:
 
 plotting.py
 -----------
-.. automodule:: savvy.plotting
+.. automodule:: plotting
    :members:
 
 interactive_plots.py
 --------------------
-.. automodule:: savvy.interactive_plots
+.. automodule:: interactive_plots
    :members:
 
 network_tools.py
 ----------------
-.. automodule:: savvy.network_tools
+.. automodule:: network_tools
    :members:
