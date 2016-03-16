@@ -1,22 +1,39 @@
 import unittest
-import os.path as op
+import os
 try:
     import cPickle as pickle
 except:
     import pickle
 
-import savvy
 
-path = op.join(savvy.__path__[0], 'sample_data_files/')
+path = os.getcwd()
 
 # Load a sample file to use for testing
-comps = pickle.load(open(path + 'unittest_comparisons.pkl', 'rb'))
+comps = pickle.load(open(path + '\\sample_data_files\\unittest_comparisons.pkl', 'rb'))
 
-from .. import interactive_plots as ip
+
+import data_processing as dp
+from collections import OrderedDict
+import numpy as np
+import pandas as pd
+
+import os
+import sys
+import interactive_plots as ip
 import unittest
+from nose.tools import assert_equal, assert_in
+import matplotlib
+from matplotlib.testing.decorators import image_comparison
+from plotting import make_plot, make_second_order_heatmap
+from bokeh.plotting import figure, show, output_notebook, output_file
+
+import warnings; warnings.filterwarnings('ignore')
+
+output_notebook()
 
 sa_dict = comps[0]
-p = ip.interact_with_plot_all_outputs(sa_dict, demo=True, manual=False) 
+
+p = ip.interact_with_plot_all_outputs(sa_dict, demo = True, manual=False) 
 
 class TestInteractWithPlots(unittest.TestCase):
 
@@ -32,7 +49,7 @@ class TestInteractWithPlots(unittest.TestCase):
             array_of_widget_names.append(str(widgets.class_own_traits.im_self)
                                          .split('.')[-1].strip('\'>'))
         self.assertEqual(array_of_widget_names, ['BoundedFloatText',
-                                       'FloatText',
+                                       'IntText',
                                        'Checkbox',
                                        'Checkbox',
                                        'Checkbox',
@@ -53,22 +70,11 @@ class TestInteractWithPlots(unittest.TestCase):
         self.assertEqual(p.widget.children[5].value, ('Tmax', 'Carbon', 'Hydrogen'))
 
 
-    #@image_comparison(baseline_images=['daily_totals'],
-    #                  extensions=['png'])
     def test_plot_all_outputs_gives_all_outputs(self):
         """
         Are tabs showing up?
         """
         # this test is in process 
-
-
-    def test_compare_images(self):
-        """
-        are the images showing up as required? 
-        """
-        # this test is yet to be written
-        #@image_comparison(baseline_images=['daily_totals'],
-        #                  extensions=['png'])
 
 
 if __name__ == '__main__':
