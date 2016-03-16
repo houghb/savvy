@@ -8,6 +8,12 @@ savvy was written to visualize the total, first order, and second order sensitiv
 
 ----
 ### Quick Start
+For the quickest introduction to savvy, run the file `savvy_driver.ipynb` in
+a Jupyter notebook.
+
+Alternatively, install savvy using setup.py (see the documentation for
+details), then run the following in a Jupyter notebook.  The Jupyter
+notebook is required for interactive widgets to work.
 ```python
 import copy
 
@@ -63,6 +69,7 @@ savvy Home (master)
 |     |      |    savvy_diagram.png
 |     |      |    savvy_logo.png
 |     |      |    savvy_logo_panel.png
+|     |      |    savvy_poster.pdf
 |     |
 |----- savvy
 |     |   __init__.py
@@ -74,8 +81,8 @@ savvy Home (master)
 |     |
 |     |----- tests
 |     |      |    __init__.py
+|     |      |    README.md
 |     |      |    test_data_processing.py
-|     |      |    test_interactive_plots.py
 |     |      |    test_network_tools.py
 |     |      |    test_plotting.py
 |     |      |    test_sensitivity_tools.py
@@ -111,9 +118,9 @@ Python version 2.7  ([https://www.python.org/](https://www.python.org/))
 - ipywidgets 4.1.1
 - Jupyter 1.0.0
 - SALib 0.7.1 (To perform sensitivity analysis)
-- graph-tool 2.12 (To generate network plots)^
+- graph-tool 2.12 (To generate network plots)^**
 
-  ^ **not included in requirements.txt**
+  ^**not included in requirements.txt (see documentation)**
 
 **License information:**   
 savvy is licensed under a BSD 2-clause “Simplified” License. The objective behind this choice of licensing is to make the content reproducible and make it useful for as many people as possible. We want to maximize the two-way collaborations with minimum restrictions, so that developers of other projects can easily utilize, patch, improve, and cite this code.
