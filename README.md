@@ -131,7 +131,7 @@ For detailed description of the contents of license please refer to [License](ht
 
 **[savvy_driver.ipynb](https://github.com/houghb/savvy/blob/master/savvy_driver.ipynb)** - This is an Jupyter Notebook that is the driver for this package and can be used to create the interactive plots.
 
-**[doc](https://github.com/houghb/savvy/tree/master/doc)** - To be completed.  This folder will contain the project documentation.
+**[doc](https://github.com/houghb/savvy/tree/master/doc)** - Contains the project documentation.
 
 **[doc/images](https://github.com/houghb/savvy/tree/master/doc/images)** - Contains images of sample plots, package workflow, as well as the savvy logo.
 
