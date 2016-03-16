@@ -20,7 +20,9 @@ MOCK_MODULES = ['bokeh', 'models.widgets', 'bokeh.models', 'Panel', 'Tabs',
                 'widgets', 'bokeh.models.widgets', 'show', 'bokeh.plotting',
                 'bokeh.charts', 'Bar', 'SALib', 'numpy', 'pandas',
                 'hashtable', 'tslib', 'lib', 'graph_tool', 'matplotlib',
-                'ipywidgets']
+                'ipywidgets', 'IPython.html.widgets', 'interact', 'fixed',
+                'html', 'BoundedFloatText', 'IntText', 'Checkbox',
+                'SelectMultiple']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
