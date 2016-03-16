@@ -7,7 +7,6 @@ are the versions used when developing savvy which are known to work.
 
 Minimum requirements:
 
-* savvy
 * python - 2.7
 * numpy - 1.10.4
 * pandas - 0.18.0
