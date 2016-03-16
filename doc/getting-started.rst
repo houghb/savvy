@@ -28,6 +28,7 @@ This will install the following packges required to run savvy:
 * Bokeh 0.11.1
 * matplotlib 1.5.1
 * ipywidgets 4.1.1
+* Jupyter 1.0.0
 * SALib 0.7.1 (To perform sensitivity analysis)
 
 *graph-tool is excluded because it cannot be installed via pip install
@@ -48,6 +49,7 @@ Using Homebrew in the command line, enter the following commands:
 Quick Start Tutorial
 ====================
 This is a quick start that generates a radial plot, heatmap, and network plot using sample datafiles.
+Run the following code from a Jupyter Notebook.
 
 .. code:: python
 

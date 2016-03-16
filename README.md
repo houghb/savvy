@@ -109,6 +109,7 @@ Python version 2.7  ([https://www.python.org/](https://www.python.org/))
 - bokeh 0.11.1
 - matplotlib 1.5.1
 - ipywidgets 4.1.1
+- Jupyter 1.0.0
 - SALib 0.7.1 (To perform sensitivity analysis)
 - graph-tool 2.12 (To generate network plots)^
 
