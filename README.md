@@ -133,7 +133,7 @@ For detailed description of the contents of license please refer to [License](ht
 
 **[doc](https://github.com/houghb/savvy/tree/master/doc)** - Contains the project documentation.
 
-**[doc/images](https://github.com/houghb/savvy/tree/master/doc/images)** - Contains images of sample plots, package workflow, as well as the savvy logo.
+**[doc/images](https://github.com/houghb/savvy/tree/master/doc/images)** - Contains images of sample plots, package workflow, a poster describing savvy as well as the savvy logo.
 
 **[savvy](https://github.com/houghb/savvy/tree/master/savvy)** - Houses modules to visualize the sensitivity analysis results.
 
