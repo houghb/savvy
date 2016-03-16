@@ -6,6 +6,8 @@ Do you savvy your sensitivity analysis results?  savvy is a data visualization t
 
 savvy was written to visualize the total, first order, and second order sensitivities of 30 outputs from a lignin pyrolysis model with 410 parameters *(link to the lignin pyrolysis model will be added when that project is published)*.  Consequently, some functionality is specific to our model and is noted as such in relevant docstrings, but overriding the default arguments in these functions allows users to use any SALib output data from SALib.analyze.sobol.
 
+**Documentation:** [ReadTheDocs](http://savvy.readthedocs.org)
+
 ----
 ### Quick Start
 For the quickest introduction to savvy, run the file `savvy_driver.ipynb` in
