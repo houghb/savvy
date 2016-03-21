@@ -50,73 +50,6 @@ g = nt.build_graph(sa_dict_net['sample-output1'], sens='ST', top=40,
 nt.plot_network_circle(g, inline=True)
 ```
 ---
-### Directory structure
-The package is organized as follows:
-```
-savvy Home (master)
-|     .gitignore
-|     Data_Description.md
-|     LICENSE
-|     Motivation_and_Design.md
-|     README.md
-|     requirements.txt
-|     rtdrequirements.txt
-|     savvy_driver.ipynb
-|     savvy_tech_review.ipynb
-|     setup.py
-|  
-|----- doc
-|     |      Makefile
-|     |      conf.py
-|     |      getting-started.rst
-|     |      index.rst
-|     |      make.bat
-|     |      module-docstrings.rst
-|     |      requirements.rst
-|     |          
-|     |----- images
-|     |      |    Motivation.png
-|     |      |    Network_graph.png
-|     |      |    radial_plot.png
-|     |      |    savvy_diagram.png
-|     |      |    savvy_logo.png
-|     |      |    savvy_logo_panel.png
-|     |      |    savvy_poster.pdf
-|     |      |    second_order_plot.png
-|     |
-|----- savvy
-|     |   __init__.py
-|     |   data_processing.py
-|     |   interactive_plots.py
-|     |   network_tools.py
-|     |   plotting.py
-|     |   sensitivity_tools.py
-|     |
-|     |----- tests
-|     |      |    __init__.py
-|     |      |    README.md
-|     |      |    interactive_plots_unittests.ipynb
-|     |      |    test_data_processing.py
-|     |      |    test_network_tools.py
-|     |      |    test_plotting.py
-|     |      |    test_sensitivity_tools.py
-|     |
-|     |----- sample_data_files
-|     |      |    README.md
-|     |      |    analysis_sample-output1.txt
-|     |      |    analysis_sample-output2.txt
-|     |      |    unittest_comparisons.pkl
-|     |
-|     |      |----- without_second_order_indices
-|     |      |     |    analysis_sample-output3-no_second_order.txt
-|     |       
-|----- standups
-|     |   README.md
-|     |   standup_2_22_16.md
-|     |   standup_2_29_16.md
-|     |   standup_3_7_16.md
-```
-----
 ### Software dependencies and license information
 
 **All the required software is open source.**  The implementation was done using the following language and packages.  
@@ -149,7 +82,7 @@ For detailed description of the contents of license please refer to [License](ht
 
 **[doc/images](https://github.com/houghb/savvy/tree/master/doc/images)** - Contains images of sample plots and the package structure.
 
-**[savvy](https://github.com/houghb/savvy/tree/master/savvy)** - Houses modules to visualize the sensitivity analysis results.
+**[savvy](https://github.com/houghb/savvy/tree/master/savvy)** - Contains modules to visualize and generate the sensitivity analysis results.
 
 -  `sensitivity_tools.py`: A wrapper of some SALib functions that can be used to generate sensitivity analysis results on your own models for visualizing in savvy.
 - `data_processing.py`: Reads, cleans, and reformats the results.
@@ -157,8 +90,63 @@ For detailed description of the contents of license please refer to [License](ht
 - `interactive_plots.py`: Allows for user interaction with the plots created in `plotting.py`.
 - `network_tools.py`: Creates a graph of the sensitivity data and displays it, but requires graph-tool which may not be available to all users.
 
-**[savvy/tests](https://github.com/houghb/savvy/tree/master/savvy/tests)** Contains unit tests for each of the modules.
+**[savvy/tests](https://github.com/houghb/savvy/tree/master/savvy/tests)** -  Contains unit tests for each of the modules.
 
 **[savvy/sample_data_files](https://github.com/houghb/savvy/tree/master/savvy/sample_data_files)** - Contains sample sensitivity analysis results from a Sobol sensitivity analysis using SALib that are used for unit testing and for demonstrating the package features.
 
-**[standups](https://github.com/houghb/savvy/tree/master/standups)** - Notes from short standup meetings to discuss our progress building this package.
+----
+### Directory structure
+The package is organized as follows:
+```
+savvy Home (master)
+|     .gitignore
+|     LICENSE
+|     README.md
+|     requirements.txt
+|     rtdrequirements.txt
+|     savvy_driver.ipynb
+|     setup.py
+|  
+|----- doc
+|     |      Makefile
+|     |      conf.py
+|     |      getting-started.rst
+|     |      index.rst
+|     |      make.bat
+|     |      module-docstrings.rst
+|     |      requirements.rst
+|     |          
+|     |----- images
+|     |      |    Network_graph.png
+|     |      |    radial_plot.png
+|     |      |    savvy_diagram.png
+|     |      |    savvy_logo.png
+|     |      |    savvy_logo_panel.png
+|     |      |    second_order_plot.png
+|     |
+|----- savvy
+|     |   __init__.py
+|     |   data_processing.py
+|     |   interactive_plots.py
+|     |   network_tools.py
+|     |   plotting.py
+|     |   sensitivity_tools.py
+|     |
+|     |----- tests
+|     |      |    __init__.py
+|     |      |    README.md
+|     |      |    interactive_plots_unittests.ipynb
+|     |      |    test_data_processing.py
+|     |      |    test_network_tools.py
+|     |      |    test_plotting.py
+|     |      |    test_sensitivity_tools.py
+|     |
+|     |----- sample_data_files
+|     |      |    README.md
+|     |      |    analysis_sample-output1.txt
+|     |      |    analysis_sample-output2.txt
+|     |      |    unittest_comparisons.pkl
+|     |
+|     |      |----- without_second_order_indices
+|     |      |     |    analysis_sample-output3-no_second_order.txt
+```
