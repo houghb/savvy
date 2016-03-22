@@ -26,6 +26,11 @@ Consequently, some functionality is specific to our model and is noted as such
 in relevant docstrings, but overriding the default arguments in these functions
 allows users to use any SALib output data from SALib.analyze.sobol.
 
+**Cite savvy:**
+
+.. image:: https://zenodo.org/badge/21004/houghb/savvy.svg
+   :target: https://zenodo.org/badge/latestdoi/21004/houghb/savvy
+
 
 Contents
 ========
