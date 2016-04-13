@@ -14,7 +14,7 @@ savvy was written to visualize the total, first order, and second order sensitiv
 
 ----
 ### Quick Start
-For the quickest introduction to savvy, run the file `savvy_driver.ipynb` in a Jupyter notebook.
+For the quickest introduction to savvy, run the file [`savvy_driver.ipynb`](http://nbviewer.jupyter.org/github/houghb/savvy/blob/master/savvy_driver.ipynb) in a Jupyter notebook.
 
 Alternatively, install savvy using setup.py (see the documentation for details), then run the following in a Jupyter notebook.  The Jupyter notebook is required for interactive widgets to work, but the core plotting functionality can also be run from the command line and Bokeh will generate html figures if preferred (see the Bokeh documentation for instructions).
 ```python
