@@ -138,7 +138,7 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     return g
 
 
-def plot_network_random(g, inline=True, filename=None):
+def plot_network_random(g, inline=True, filename=None, scale=300.0):
     """
     Display a plot of the network, g, with the vertices placed in an
     unstructured, apparently random layout.  Vertices are the model
@@ -156,15 +156,22 @@ def plot_network_random(g, inline=True, filename=None):
     filename : str, optional
                If you would like to save the plot to a file specify a
                filename (with an extension of pdf or png).
+    scale    : float, optional
+               If you would like to resize the vertices you can change the
+               value of this float.
 
     Returns
     --------
     graph-tool plot
     """
+    for i in range(g.num_vertices()):
+        g.vp['sensitivity'][i] = scale * g.vp['sensitivity'][i]
 
     draw.graph_draw(g,
                     vertex_text=g.vp['param'],
-                    vertex_font_size=8,
+                    vertex_font_size=10,
+                    vertex_text_position=-0.1,
+                    # vertex_text_color='black',
                     vertex_size=g.vp['sensitivity'],
                     vertex_color='#006600',
                     vertex_fill_color='#006600',
@@ -179,7 +186,7 @@ def plot_network_random(g, inline=True, filename=None):
                     )
 
 
-def plot_network_circle(g, inline=True, filename=None):
+def plot_network_circle(g, inline=True, filename=None, scale=300.0):
     """
     Display a plot of the network, g, with the vertices placed around the
     edge of a circle.  Vertices are the model parameters and they are
@@ -197,16 +204,24 @@ def plot_network_circle(g, inline=True, filename=None):
     filename : str, optional
                If you would like to save the plot to a file specify a
                filename (with an extension of pdf or png).
+    scale    : float, optional
+               If you would like to resize the vertices you can change the
+               value of this float.
 
     Returns
     --------
     graph-tool plot
     """
 
+    for i in range(g.num_vertices()):
+        g.vp['sensitivity'][i] = scale * g.vp['sensitivity'][i]
+
     state = community.minimize_nested_blockmodel_dl(g, deg_corr=True)
     draw.draw_hierarchy(state,
                         vertex_text=g.vp['param'],
-                        vertex_font_size=8,
+                        vertex_text_position=-0.1,
+                        # vertex_text_color='black',
+                        vertex_font_size=10,
                         vertex_size=g.vp['sensitivity'],
                         vertex_color='#006600',
                         vertex_fill_color='#006600',
@@ -215,6 +230,7 @@ def plot_network_circle(g, inline=True, filename=None):
                         vertex_halo_size=g.vp['confidence'],
                         edge_pen_width=g.ep['second_sens'],
                         # subsample_edges=100,
+                        output_size=(600, 600),
                         inline=inline,
                         output=filename
                         )
