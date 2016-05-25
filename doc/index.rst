@@ -21,7 +21,7 @@ For information on sensitivity analysis please see the SALib documentation.
 
 savvy was written to visualize the total, first order, and second order
 sensitivities of 30 outputs from a lignin pyrolysis model with 410 parameters
-*(link to the lignin pyrolysis model will be added when that project is published)*.
+`(available here)<https://github.com/houghb/ligpy>`_.
 Consequently, some functionality is specific to our model and is noted as such
 in relevant docstrings, but overriding the default arguments in these functions
 allows users to use any SALib output data from SALib.analyze.sobol.
