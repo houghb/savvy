@@ -6,7 +6,7 @@ Do you savvy your sensitivity analysis results?  savvy is a data visualization t
 
 For information on sensitivity analysis please see the SALib documentation.
 
-savvy was written to visualize the total, first order, and second order sensitivities of 30 outputs from a lignin pyrolysis model with 410 parameters *(link to the lignin pyrolysis model will be added when that project is published)*.  Consequently, some functionality is specific to our model and is noted as such in relevant docstrings, but overriding the default arguments in these functions allows users to use any SALib output data from SALib.analyze.sobol.
+savvy was written to visualize the total, first order, and second order sensitivities of 30 outputs from a lignin pyrolysis model with 410 parameters [(available here)](https://github.com/houghb/ligpy).  Consequently, some functionality is specific to our model and is noted as such in relevant docstrings, but overriding the default arguments in these functions allows users to use any SALib output data from SALib.analyze.sobol.
 
 **Documentation:** [ReadTheDocs](http://savvy.readthedocs.org)  
 **Cite savvy:** [![DOI](https://zenodo.org/badge/21004/houghb/savvy.svg)](https://zenodo.org/badge/latestdoi/21004/houghb/savvy)
