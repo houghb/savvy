@@ -16,6 +16,53 @@ import os
 import pandas as pd
 
 
+def _map_pretty_names(df, column_names, pretty_names):
+    for name in column_names:
+        df[name] = df[name].map(pretty_names).fillna(df[name])
+    return df 
+
+
+def format_salib_output(salib_output, run_name, pretty_names=None):
+    """
+    Function reads the output of SALib.analyze and returns a dictionary that savvy expects.
+
+    Parameters
+    ----------
+    path      : dict
+                salib analyze output
+
+    run_name  : str, 
+                the name of the simulation
+                
+    pretty_names: dict, optional
+                a dictionary mapping old names to new names
+
+    Returns   : dict
+    """
+    df_list = salib_output.to_df()
+
+    # combine S1 and ST
+    df_list[0] = pd.concat((df_list[0], df_list[1]), axis=1)
+    df_list.pop(1)
+
+    # Make the Parameter Column
+    # for i, _ in enumerate(df_list):
+    df_list[0]['Parameter'] = df_list[0].index
+    if pretty_names:
+        df_list[0] = _map_pretty_names(df_list[0], ['Parameter'], pretty_names)
+    df_list[0].reset_index(inplace=True, drop=True)
+
+    # split up the parameters from S2
+    df_list[-1][['Parameter_1', 'Parameter_2']] = df_list[-1].index.to_series().apply(pd.Series)
+    df_list[-1].reset_index(inplace=True, drop=True)
+    if pretty_names:
+        df_list[-1] = _map_pretty_names(df_list[-1], ['Parameter_1', 'Parameter_2'], pretty_names)
+
+    return {run_name: df_list}
+
+
+
+
 def read_file(path, numrows=None, drop=False, sep=','):
     """
     Function reads a file of input parameters or model results

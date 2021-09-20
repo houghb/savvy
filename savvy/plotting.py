@@ -407,8 +407,8 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
     """
 
     # Confirm that df contains second order sensitivity indices
-    if (list(df.columns.values) !=
-            ['Parameter_1', 'Parameter_2', 'S2', 'S2_conf']):
+    if (list(df.columns.values).sort() !=
+            ['Parameter_1', 'Parameter_2', 'S2', 'S2_conf'].sort()):
         raise TypeError('df must contain second order sensitivity data')
 
     # Make sure `top` != 0 (it must be at least 1, even if a list is
@@ -469,14 +469,14 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
                 else:
                     s2.append(sens_mirror.S2.values[0])
                     s2_conf.append(sens_mirror.S2_conf.values[0])
-                    color.append(colors[int(round((sens_mirror.S2.values[0] /
-                                                   maxval) * 7) + 1)])
+                    color.append(colors[max(0, int(round((sens_mirror.S2.values[0] /
+                                                   maxval) * 7) + 1))])
             # This else handles the standard (un-mirrored) boxes of the plot
             else:
                 s2.append(sens.S2.values[0])
                 s2_conf.append(sens.S2_conf.values[0])
-                color.append(colors[int(round((sens.S2.values[0] /
-                                               maxval) * 7) + 1)])
+                color.append(colors[max(0, int(round((sens.S2.values[0] /
+                                               maxval) * 7) + 1))])
 
     source = ColumnDataSource(data=dict(xlabel=xlabel, ylabel=ylabel, s2=s2,
                               s2_conf=s2_conf, color=color))

@@ -120,7 +120,13 @@ def interact_with_plot_all_outputs(sa_dict, demo=False, manual=True):
 
     # get a list of all the parameter options
     key = list(sa_dict.keys())[0]
-    param_options = list(sa_dict[key][0].Parameter.values)
+
+    # get a list of the options (supports old and new salib format)
+    try:
+        param_options = list(sa_dict[key][0].Parameter.values)
+    except AttributeError:
+        param_options = list(sa_dict[key][0].index.values)
+
     highlighted = SelectMultiple(description="Choose parameters to highlight",
                                  options=param_options, value=[])
 
@@ -170,8 +176,7 @@ def plot_all_second_order(sa_dict, top=5, mirror=True, include=[]):
         p = make_second_order_heatmap(outcomes_array[i],
                                       top=top,
                                       mirror=mirror,
-                                      include=include
-                                      )
+                                      include=include)
         tabs_dictionary[i] = Panel(child=p, title=list(sa_dict.keys())[i])
 
     tabs = Tabs(tabs=list(tabs_dictionary.values()))
