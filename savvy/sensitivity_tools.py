@@ -7,14 +7,14 @@ use the other functionality in savvy but will not be able to perform new
 sensitivity analyses.
 """
 
-from subprocess import call
+from subprocess import run
 
 try:
     from SALib.sample import saltelli
 except ImportError:
-    print ('----\nSALib is not installed - please install it to use '
-           'sensitivity_tools.\nOther modules in savvy are independent of '
-           'SALib.')
+    print('----\nSALib is not installed - please install it to use '
+          'sensitivity_tools.\nOther modules in savvy are independent of '
+          'SALib.')
 
 
 def gen_params(num_vars, names, bounds, n, save_loc, second_ord=True):
@@ -72,9 +72,9 @@ def gen_params(num_vars, names, bounds, n, save_loc, second_ord=True):
     param_sets = saltelli.sample(problem, n, calc_second_order=second_ord)
 
     if second_ord:
-        print '%s simulations will be run' % (2*n * (problem['num_vars'] + 1))
+        print('%s simulations will be run' % (2*n * (problem['num_vars'] + 1)))
     elif second_ord is False:
-        print '%s simulations will be run' % (n * (problem['num_vars'] + 2))
+        print('%s simulations will be run' % (n * (problem['num_vars'] + 2)))
 
     # Write the problem description to a file (required to run the analysis
     # after your model has been run with all the generated parameter sets)
@@ -131,12 +131,12 @@ def analyze_sensitivity(problem, Y, column, delimiter, order, name,
     """
 
     if parallel:
-        call('python -m SALib.analyze.sobol -p %s -Y %s -c %i --delimiter %s '
+        run(('python -m SALib.analyze.sobol -p %s -Y %s -c %i --delimiter %s '
              '--max-order %i --parallel --processors %i > analysis_%s.txt'
-             % (problem, Y, column, delimiter, order, processors, name),
-             shell=True)
+             % (problem, Y, column, delimiter, order, processors, name)).split(" "),
+            shell=True)
 
     else:
-        call('python -m SALib.analyze.sobol -p %s -Y %s'
+        run(('python -m SALib.analyze.sobol -p %s -Y %s'
              ' -c %s --delimiter %s --max-order %s > analysis_%s.txt' %
-             (problem, Y, column, delimiter, order, name), shell=True)
+             (problem, Y, column, delimiter, order, name)).split(" "), shell=True)
