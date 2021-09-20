@@ -14,12 +14,16 @@ ipywidgets
 collections
 
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from bokeh.models.widgets import Panel, Tabs
 from bokeh.plotting import show
 from ipywidgets import BoundedFloatText, IntText, Checkbox, SelectMultiple
 from IPython.html.widgets import interact, fixed
 
-from plotting import make_plot, make_second_order_heatmap
+from .plotting import make_plot, make_second_order_heatmap
 
 import warnings; warnings.filterwarnings('ignore')
 
@@ -83,9 +87,9 @@ def plot_all_outputs(sa_dict, demo=False, min_val=0.01, top=100, stacked=True,
                       lgaxis=log_axis,
                       highlight=highlighted_parameters
                       )
-        tabs_dictionary[i] = Panel(child=p, title=sa_dict.keys()[i])
+        tabs_dictionary[i] = Panel(child=p, title=list(sa_dict.keys())[i])
 
-    tabs = Tabs(tabs=tabs_dictionary.values())
+    tabs = Tabs(tabs=list(tabs_dictionary.values()))
     p = show(tabs)
 
     return p
@@ -115,7 +119,7 @@ def interact_with_plot_all_outputs(sa_dict, demo=False, manual=True):
     log_axis = Checkbox(description='Use log axis:', value=True)
 
     # get a list of all the parameter options
-    key = sa_dict.keys()[0]
+    key = list(sa_dict.keys())[0]
     param_options = list(sa_dict[key][0].Parameter.values)
     highlighted = SelectMultiple(description="Choose parameters to highlight",
                                  options=param_options, value=[])
@@ -168,9 +172,9 @@ def plot_all_second_order(sa_dict, top=5, mirror=True, include=[]):
                                       mirror=mirror,
                                       include=include
                                       )
-        tabs_dictionary[i] = Panel(child=p, title=sa_dict.keys()[i])
+        tabs_dictionary[i] = Panel(child=p, title=list(sa_dict.keys())[i])
 
-    tabs = Tabs(tabs=tabs_dictionary.values())
+    tabs = Tabs(tabs=list(tabs_dictionary.values()))
     p = show(tabs)
 
     return p

@@ -15,7 +15,9 @@ visualizations offer better insight into these relative magnitudes.
 """
 
 try:
-    from graph_tool import Graph, draw, community
+    import graph_tool.all as gt
+    from graph_tool import Graph, draw
+    from graph_tool.all import minimize_nested_blockmodel_dl
 except ImportError:
     print ('----\ngraph-tool package is not installed - please install it to '
            'use network_tools!\nOther modules in savvy are independent'
@@ -77,7 +79,7 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     # slice the dataframes so the resulting graph will only include the top
     # 'top' values of 'sens' greater than 'min_sens'.
     df = df.sort_values(sens, ascending=False)
-    df = df.ix[df[sens] > min_sens, :].head(top)
+    df = df.loc[df[sens] > min_sens, :].head(top)
     df = df.reset_index()
 
     # initialize a graph
@@ -99,8 +101,8 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     # Add the vertices to the graph
     for i, param in enumerate(df['Parameter']):
         v = g.add_vertex()
-        vprop_sens[v] = df.ix[i, sens]
-        vprop_conf[v] = 1 + df.ix[i, '%s_conf' % sens] / df.ix[i, sens]
+        vprop_sens[v] = df.loc[i, sens]
+        vprop_conf[v] = 1 + df.loc[i, '%s_conf' % sens] / df.loc[i, sens]
         vprop_name[v] = param
         v_list.append(v)
 
@@ -110,8 +112,8 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     df2['vertex2'] = -999
     for vertex in v_list:
         param = g.vp.param[vertex]
-        df2.ix[df2['Parameter_1'] == param, 'vertex1'] = vertex
-        df2.ix[df2['Parameter_2'] == param, 'vertex2'] = vertex
+        df2.loc[df2['Parameter_1'] == param, 'vertex1'] = vertex
+        df2.loc[df2['Parameter_2'] == param, 'vertex2'] = vertex
 
     # Only allow edges for vertices that we've defined
     df_edges = df2[(df2['vertex1'] != -999) & (df2['vertex2'] != -999)]
@@ -120,8 +122,8 @@ def build_graph(df_list, sens='ST', top=410, min_sens=0.01,
     pruned.reset_index(inplace=True)
     # Add the edges for the graph
     for i, sensitivity in enumerate(pruned['S2']):
-        v1 = pruned.ix[i, 'vertex1']
-        v2 = pruned.ix[i, 'vertex2']
+        v1 = pruned.loc[i, 'vertex1']
+        v2 = pruned.loc[i, 'vertex2']
         e = g.add_edge(v1, v2)
         # multiply by a number to make the lines visible on the plot
         eprop_sens[e] = sensitivity * 150
@@ -216,8 +218,8 @@ def plot_network_circle(g, inline=True, filename=None, scale=300.0):
     for i in range(g.num_vertices()):
         g.vp['sensitivity'][i] = scale * g.vp['sensitivity'][i]
 
-    state = community.minimize_nested_blockmodel_dl(g, deg_corr=True)
-    draw.draw_hierarchy(state,
+    state = minimize_nested_blockmodel_dl(g, )  # deg_corr=True)
+    gt.draw_hierarchy(state,
                         vertex_text=g.vp['param'],
                         vertex_text_position=-0.1,
                         # vertex_text_color='black',

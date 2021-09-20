@@ -13,8 +13,8 @@ import numpy as np
 import pandas as pd
 
 from bokeh.plotting import figure, ColumnDataSource
-from bokeh.models import HoverTool
-from bokeh.charts import Bar
+from bokeh.models import HoverTool, VBar
+# from bokeh.charts import Bar
 
 
 def make_plot(dataframe=pd.DataFrame(), highlight=[],
@@ -155,7 +155,7 @@ def make_plot(dataframe=pd.DataFrame(), highlight=[],
     else:
         small_angle = big_angle / 3
     # tools enabled for bokeh figure
-    plottools = "hover, wheel_zoom, save, reset, resize"  # , tap"
+    plottools = "hover, wheel_zoom, save, reset," # , tap"
     # Initialize figure with tools, coloring, etc.
     p = figure(plot_width=width, plot_height=height, title="",
                x_axis_type=None, y_axis_type=None,
@@ -415,7 +415,7 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
     # specified for `include`.
     if top <= 0:
         top = 1
-        print '`top` cannot be <= 0; it has been set to 1'
+        print('`top` cannot be <= 0; it has been set to 1')
 
     # Colormap to use for plot
     colors = ["#f7fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6",
@@ -448,7 +448,7 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
             # sens is a dataframe with S2 and S2_conf that is stored for
             # each box of the heat map
             sens = (df[df.Parameter_1.isin([px]) & df.Parameter_2.isin([py])]
-                    .ix[:, ['S2', 'S2_conf']])
+                    .loc[:, ['S2', 'S2_conf']])
             # dfs can be empty if there are no corresponding pairs in the
             # source dataframe (for example a parameter interacting with
             # itself).
@@ -461,7 +461,7 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
             elif sens.empty and mirror:
                 sens_mirror = (df[df.Parameter_1.isin([py]) &
                                   df.Parameter_2.isin([px])]
-                               .ix[:, ['S2', 'S2_conf']])
+                               .loc[:, ['S2', 'S2_conf']])
                 if sens_mirror.empty:
                     s2.append(float('NaN'))
                     s2_conf.append(float('NaN'))
@@ -482,7 +482,7 @@ def make_second_order_heatmap(df, top=10, name='', mirror=True, include=[]):
                               s2_conf=s2_conf, color=color))
 
     # Initialize the plot
-    plottools = "resize, hover, save, pan, box_zoom, wheel_zoom, reset"
+    plottools = "hover, save, pan, box_zoom, wheel_zoom, reset"
     p = figure(title="%s second order sensitivities" % name,
                x_range=list(reversed(labels)), y_range=labels,
                x_axis_location="above", plot_width=700, plot_height=700,

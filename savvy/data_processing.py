@@ -7,6 +7,10 @@ as any SALib analysis results will be from a sobol analysis.
 Our data files are stored outside this repository because they are too large,
 so users need to specify the path to their data.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import os
 
 import pandas as pd
@@ -209,19 +213,19 @@ def get_sa_data(path='.'):
         # display of them in a logical way.
         # .
         # adjust confidence interval to account for shifting sensitivity value
-        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1_conf'] = (
+        sens_dfs[name][0].loc[sens_dfs[name][0]['S1'] < 0, 'S1_conf'] = (
             sens_dfs[name][0]['S1_conf'] + sens_dfs[name][0]['S1'] - 0.0001)
         # set the new sensitivity value = 0.0001
-        sens_dfs[name][0].ix[sens_dfs[name][0]['S1'] < 0, 'S1'] = 0.0001
+        sens_dfs[name][0].loc[sens_dfs[name][0]['S1'] < 0, 'S1'] = 0.0001
         # do the same for total and second order indices
-        sens_dfs[name][0].ix[sens_dfs[name][0]['ST'] < 0, 'ST_conf'] = (
+        sens_dfs[name][0].loc[sens_dfs[name][0]['ST'] < 0, 'ST_conf'] = (
             sens_dfs[name][0]['ST_conf'] + sens_dfs[name][0]['ST'] - 0.0001)
-        sens_dfs[name][0].ix[sens_dfs[name][0]['ST'] < 0, 'ST'] = 0.0001
+        sens_dfs[name][0].loc[sens_dfs[name][0]['ST'] < 0, 'ST'] = 0.0001
         if isinstance(sens_dfs[name][1], pd.DataFrame):
-            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2_conf'] = (
+            sens_dfs[name][1].loc[sens_dfs[name][1]['S2'] < 0, 'S2_conf'] = (
                 sens_dfs[name][1]['S2_conf'] + sens_dfs[name][1]['S2'] -
                 0.0001)
-            sens_dfs[name][1].ix[sens_dfs[name][1]['S2'] < 0, 'S2'] = 0.0001
+            sens_dfs[name][1].loc[sens_dfs[name][1]['S2'] < 0, 'S2'] = 0.0001
 
         # Change 'rxn' to 'k' for consistency with inputs file
         sens_dfs[name][0].Parameter = (sens_dfs[name][0].Parameter
@@ -264,7 +268,7 @@ def find_unimportant_params(header='ST', path='.'):
         df = sa_dict[key][0]
         zero_params.append(df[(df[header] == 0.0) &
                               (df['%s_conf' % header] == 0.0)]
-                           .ix[:, 'Parameter'].values.tolist())
+                           .loc[:, 'Parameter'].values.tolist())
 
     result = set(zero_params[0])
     for s in zero_params[1:]:
@@ -272,8 +276,8 @@ def find_unimportant_params(header='ST', path='.'):
     unimportant = list(result)
     unimportant.sort()
 
-    print 'The following %s parameters have %s==0 for all outputs:\n' % \
-          (len(unimportant), header), unimportant, '\n'
+    print('The following %s parameters have %s==0 for all outputs:\n' % \
+          (len(unimportant), header), unimportant, '\n')
     return unimportant
 
 
